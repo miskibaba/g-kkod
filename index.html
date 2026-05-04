@@ -1,0 +1,2971 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GökKod v1.1 — Türkiye'nin Kodlama Platformu</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════
+   GökKod Platform v1.1 — Engin Çimen
+   © 2025 GökBilişim — Tüm hakları saklıdır
+═══════════════════════════════════════════════════ */
+:root {
+  --bg0:   #05080f;
+  --bg1:   #080c14;
+  --bg2:   #0c1220;
+  --bg3:   #111828;
+  --bg4:   #162035;
+  --bg5:   #1a2640;
+  --border:#1e3050;
+  --brite: #2a4570;
+  --cyan:  #38bdf8;
+  --blue:  #4facde;
+  --sky:   #0ea5e9;
+  --purple:#a78bfa;
+  --green: #34d399;
+  --yellow:#fbbf24;
+  --red:   #f87171;
+  --pink:  #ff7eb6;
+  --text:  #e2eaf4;
+  --text2: #8b9bb4;
+  --text3: #4a5568;
+  --grad:  linear-gradient(135deg,#38bdf8,#a78bfa);
+  --grad2: linear-gradient(135deg,#0ea5e9,#7c3aed);
+  --glow:  0 0 30px rgba(56,189,248,0.15);
+  --r:     10px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:var(--bg0);color:var(--text);}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg1);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--brite);}
+
+/* ─── PAGES ─── */
+.page{position:fixed;inset:0;display:none;overflow:auto;background:var(--bg0);}
+.page.active{display:flex;}
+
+/* ═══════════════════════════════════════
+   GÖK LOGO SVG
+═══════════════════════════════════════ */
+.gok-logo-svg{display:inline-block;}
+
+/* ═══════════════════════════════════════
+   AUTH SAYFASI (GİRİŞ / KAYIT)
+═══════════════════════════════════════ */
+#page-auth{flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 20% 50%,rgba(56,189,248,0.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(167,139,250,0.07) 0%,transparent 50%),var(--bg0);}
+
+.auth-card{
+  width:440px;max-width:95vw;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:36px 32px;
+  box-shadow:0 24px 80px rgba(0,0,0,0.6),var(--glow);
+  animation:fadeUp .4s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+.auth-logo{text-align:center;margin-bottom:28px;}
+.auth-logo-mark{
+  width:64px;height:64px;margin:0 auto 12px;
+  background:var(--grad);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;box-shadow:0 0 24px rgba(56,189,248,0.3);
+}
+.auth-logo-name{font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.auth-logo-ver{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:3px;}
+.auth-logo-by{font-size:10px;color:var(--text3);margin-top:4px;}
+
+.auth-tabs{display:flex;gap:0;margin-bottom:24px;border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.auth-tab{flex:1;padding:9px;text-align:center;font-size:12.5px;font-weight:700;cursor:pointer;background:transparent;border:none;color:var(--text3);transition:all .2s;}
+.auth-tab.active{background:var(--bg4);color:var(--cyan);}
+
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.5px;}
+.form-input{
+  width:100%;padding:10px 14px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  outline:none;transition:border-color .2s;
+}
+.form-input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(56,189,248,0.1);}
+.form-input::placeholder{color:var(--text3);}
+
+.role-select{display:flex;gap:8px;margin-bottom:16px;}
+.role-btn{
+  flex:1;padding:10px;border-radius:8px;
+  border:1px solid var(--border);background:var(--bg3);
+  color:var(--text2);cursor:pointer;font-size:12px;
+  font-family:'Syne',sans-serif;font-weight:700;
+  transition:all .2s;text-align:center;
+}
+.role-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(56,189,248,0.08);}
+
+.btn-primary{
+  width:100%;padding:12px;border-radius:8px;
+  background:var(--grad2);border:none;color:white;
+  font-size:13px;font-weight:800;font-family:'Syne',sans-serif;
+  cursor:pointer;transition:all .2s;letter-spacing:.5px;
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(14,165,233,0.3);}
+
+.btn-google{
+  width:100%;padding:10px;border-radius:8px;
+  border:1px solid var(--border);background:var(--bg3);
+  color:var(--text2);font-size:12.5px;font-weight:700;
+  font-family:'Syne',sans-serif;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;margin-top:8px;
+}
+.btn-google:hover{border-color:var(--brite);color:var(--text);}
+
+.auth-divider{text-align:center;font-size:11px;color:var(--text3);margin:12px 0;position:relative;}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border);}
+.auth-divider::before{left:0;}
+.auth-divider::after{right:0;}
+
+.form-error{font-size:11px;color:var(--red);margin-top:4px;display:none;}
+.form-error.show{display:block;}
+
+.pass-strength{height:3px;border-radius:2px;margin-top:4px;background:var(--bg4);overflow:hidden;}
+.pass-strength-bar{height:100%;width:0%;transition:all .3s;border-radius:2px;}
+
+.auth-footer{text-align:center;font-size:11px;color:var(--text3);margin-top:20px;}
+
+/* ═══════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════ */
+#page-dash{flex-direction:column;background:var(--bg0);}
+
+/* Navbar */
+.navbar{
+  height:56px;background:var(--bg1);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 20px;gap:16px;
+  flex-shrink:0;position:relative;z-index:100;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.nav-logo-mark{
+  width:34px;height:34px;background:var(--grad);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;box-shadow:0 0 14px rgba(56,189,248,0.25);
+}
+.nav-logo-text{font-size:15px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-logo-ver{font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-left:4px;}
+
+.nav-search{
+  flex:1;max-width:320px;
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:7px 12px;
+}
+.nav-search input{background:transparent;border:none;outline:none;color:var(--text);font-size:12.5px;font-family:'JetBrains Mono',monospace;width:100%;}
+.nav-search input::placeholder{color:var(--text3);}
+
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+
+.nav-xp{
+  display:flex;align-items:center;gap:6px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;padding:4px 10px;
+  font-size:11px;font-weight:700;color:var(--yellow);
+}
+
+.nav-notif{
+  width:34px;height:34px;border-radius:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:15px;position:relative;
+  transition:all .15s;
+}
+.nav-notif:hover{background:var(--bg4);border-color:var(--brite);}
+.notif-badge{
+  position:absolute;top:4px;right:4px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--red);border:2px solid var(--bg1);
+}
+
+.nav-avatar{
+  width:34px;height:34px;border-radius:9px;
+  background:var(--grad);display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;cursor:pointer;
+  box-shadow:0 0 10px rgba(56,189,248,0.2);
+  position:relative;
+}
+.nav-avatar-menu{
+  position:absolute;top:calc(100%+8px);right:0;
+  background:var(--bg3);border:1px solid var(--brite);
+  border-radius:10px;padding:8px;min-width:180px;
+  display:none;z-index:200;
+  box-shadow:0 16px 48px rgba(0,0,0,0.5);
+  animation:dropIn .15s ease;
+}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.nav-avatar-menu.show{display:block;}
+.nav-menu-item{
+  padding:8px 10px;border-radius:6px;
+  font-size:12.5px;cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  color:var(--text);transition:background .1s;
+}
+.nav-menu-item:hover{background:var(--bg4);}
+.nav-menu-item.danger{color:var(--red);}
+
+/* Dash içerik */
+.dash-body{
+  flex:1;display:flex;overflow:hidden;
+}
+
+.dash-sidebar{
+  width:220px;flex-shrink:0;
+  background:var(--bg1);border-right:1px solid var(--border);
+  padding:16px 0;overflow-y:auto;
+}
+.dash-nav-group{padding:0 12px;margin-bottom:8px;}
+.dash-nav-label{
+  font-size:9.5px;font-weight:700;letter-spacing:1.5px;
+  color:var(--text3);text-transform:uppercase;
+  padding:0 6px;margin-bottom:6px;
+}
+.dash-nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border-radius:7px;
+  font-size:12.5px;font-weight:600;color:var(--text2);
+  cursor:pointer;transition:all .15s;margin-bottom:2px;
+}
+.dash-nav-item:hover{background:var(--bg3);color:var(--text);}
+.dash-nav-item.active{background:rgba(56,189,248,0.1);color:var(--cyan);}
+.dash-nav-item .icon{font-size:15px;width:20px;text-align:center;}
+.dash-nav-item .badge{
+  margin-left:auto;background:var(--red);
+  color:white;font-size:9px;padding:1px 5px;
+  border-radius:8px;font-weight:800;
+}
+
+.dash-main{
+  flex:1;overflow-y:auto;padding:24px;
+}
+
+/* Karşılama */
+.welcome-strip{
+  background:linear-gradient(135deg,rgba(56,189,248,0.08),rgba(167,139,250,0.08));
+  border:1px solid var(--border);border-radius:12px;
+  padding:20px 24px;margin-bottom:20px;
+  display:flex;align-items:center;gap:20px;
+}
+.welcome-text h2{font-size:18px;font-weight:800;margin-bottom:4px;}
+.welcome-text p{font-size:12.5px;color:var(--text2);}
+.welcome-stats{margin-left:auto;display:flex;gap:16px;}
+.welcome-stat{text-align:center;}
+.welcome-stat .val{font-size:20px;font-weight:800;color:var(--cyan);}
+.welcome-stat .lbl{font-size:10px;color:var(--text3);}
+
+/* Grid kart */
+.section-title{
+  font-size:12px;font-weight:700;letter-spacing:1px;
+  color:var(--text3);text-transform:uppercase;
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.cards-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px;margin-bottom:24px;
+}
+
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:16px;cursor:pointer;
+  transition:all .2s;
+}
+.card:hover{border-color:var(--brite);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+.card-icon{font-size:22px;margin-bottom:10px;}
+.card-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.card-desc{font-size:11px;color:var(--text3);}
+.card-meta{
+  margin-top:10px;font-size:10px;color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+  display:flex;justify-content:space-between;
+}
+.card-tag{
+  display:inline-block;padding:2px 7px;border-radius:4px;
+  font-size:10px;font-weight:700;margin-top:6px;
+}
+.tag-cn{background:rgba(56,189,248,0.1);color:var(--cyan);}
+.tag-new{background:rgba(52,211,153,0.1);color:var(--green);}
+
+/* Dosya gezgini */
+.file-explorer{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;margin-bottom:20px;
+}
+.fe-header{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg3);
+}
+.fe-title{font-size:12px;font-weight:700;flex:1;}
+.fe-actions{display:flex;gap:6px;}
+.fe-btn{
+  padding:4px 10px;border-radius:5px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--text2);font-size:11px;font-weight:700;
+  cursor:pointer;font-family:'Syne',sans-serif;
+  transition:all .15s;
+}
+.fe-btn:hover{background:var(--bg4);color:var(--text);}
+.fe-btn.primary{background:rgba(56,189,248,0.1);border-color:var(--cyan);color:var(--cyan);}
+.file-list{padding:8px;}
+.file-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;border-radius:6px;cursor:pointer;
+  transition:background .1s;font-size:12.5px;
+  font-family:'JetBrains Mono',monospace;
+  color:var(--text2);
+}
+.file-item:hover{background:var(--bg3);color:var(--text);}
+.file-item.active{background:rgba(56,189,248,0.08);color:var(--cyan);}
+.file-item-icon{font-size:13px;}
+.file-item-name{flex:1;}
+.file-item-size{font-size:10px;color:var(--text3);}
+
+/* ═══════════════════════════════════════
+   IDE SAYFASI
+═══════════════════════════════════════ */
+#page-ide{flex-direction:column;background:var(--bg0);}
+
+/* IDE Navbar */
+.ide-nav{
+  height:44px;background:var(--bg1);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  flex-shrink:0;
+}
+.ide-nav-logo{
+  width:52px;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  border-right:1px solid var(--border);cursor:pointer;
+}
+.ide-nav-logo-mark{
+  width:28px;height:28px;background:var(--grad);
+  border-radius:7px;display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+}
+
+.ide-menu{display:flex;height:100%;}
+.ide-menu-item{
+  padding:0 12px;height:100%;display:flex;
+  align-items:center;font-size:12.5px;font-weight:700;
+  color:var(--text2);cursor:pointer;position:relative;
+  transition:color .15s;border-bottom:2px solid transparent;
+}
+.ide-menu-item:hover{color:var(--text);}
+.ide-menu-item.open{color:var(--cyan);border-bottom-color:var(--cyan);}
+
+.ide-dropdown{
+  position:absolute;top:100%;left:0;
+  background:var(--bg3);border:1px solid var(--brite);
+  border-radius:8px;padding:4px;min-width:210px;
+  z-index:999;display:none;
+  box-shadow:0 12px 40px rgba(0,0,0,0.5);
+  animation:dropIn .12s ease;
+}
+.ide-dropdown.show{display:block;}
+.ide-dd-item{
+  padding:7px 10px;border-radius:5px;
+  font-size:12px;font-weight:600;color:var(--text);
+  cursor:pointer;display:flex;justify-content:space-between;
+  align-items:center;transition:background .1s;
+}
+.ide-dd-item:hover{background:var(--bg4);}
+.ide-dd-item .kbd{
+  font-size:10px;color:var(--text3);
+  font-family:'JetBrains Mono',monospace;
+  background:var(--bg2);padding:1px 5px;
+  border-radius:3px;border:1px solid var(--border);
+}
+.ide-dd-sep{height:1px;background:var(--border);margin:3px 0;}
+
+.ide-nav-center{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;}
+.ide-run-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:6px 16px;border-radius:7px;
+  background:linear-gradient(135deg,rgba(52,211,153,0.15),rgba(14,165,233,0.15));
+  border:1px solid rgba(52,211,153,0.3);
+  color:var(--green);font-size:12.5px;font-weight:800;
+  font-family:'Syne',sans-serif;cursor:pointer;transition:all .15s;
+}
+.ide-run-btn:hover{background:linear-gradient(135deg,rgba(52,211,153,0.25),rgba(14,165,233,0.25));box-shadow:0 0 16px rgba(52,211,153,0.2);}
+.ide-file-tag{
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  color:var(--text2);background:var(--bg3);
+  padding:4px 10px;border-radius:5px;
+  border:1px solid var(--border);
+}
+.ide-save-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--yellow);display:none;
+  box-shadow:0 0 6px var(--yellow);
+}
+.ide-save-dot.show{display:block;}
+
+.ide-nav-right{margin-left:auto;display:flex;align-items:center;gap:8px;padding-right:12px;}
+.ide-icon-btn{
+  width:32px;height:32px;border-radius:7px;
+  background:transparent;border:1px solid transparent;
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:all .15s;
+}
+.ide-icon-btn:hover{background:var(--bg3);border-color:var(--border);color:var(--text);}
+
+/* IDE Toolbar */
+.ide-toolbar{
+  height:34px;background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 10px;gap:4px;
+  flex-shrink:0;
+}
+.tb-btn{
+  height:24px;padding:0 8px;border-radius:4px;
+  background:transparent;border:none;
+  color:var(--text2);cursor:pointer;
+  font-size:11.5px;font-weight:700;
+  font-family:'Syne',sans-serif;
+  display:flex;align-items:center;gap:5px;
+  transition:all .1s;
+}
+.tb-btn:hover{background:var(--bg4);color:var(--text);}
+.tb-sep{width:1px;height:18px;background:var(--border);margin:0 4px;}
+
+/* IDE Tabs */
+.ide-tabs{
+  height:34px;background:var(--bg1);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-end;
+  flex-shrink:0;overflow-x:auto;
+}
+.ide-tabs::-webkit-scrollbar{height:0;}
+.ide-tab{
+  height:30px;padding:0 14px;display:flex;align-items:center;gap:7px;
+  font-size:12px;font-family:'JetBrains Mono',monospace;
+  color:var(--text3);cursor:pointer;flex-shrink:0;
+  border-top:2px solid transparent;border-right:1px solid var(--border);
+  background:var(--bg1);transition:all .15s;white-space:nowrap;
+}
+.ide-tab:hover{background:var(--bg2);color:var(--text2);}
+.ide-tab.active{background:var(--bg0);color:var(--text);border-top-color:var(--cyan);}
+.ide-tab-dot{width:6px;height:6px;border-radius:50%;background:var(--yellow);display:none;}
+.ide-tab.unsaved .ide-tab-dot{display:block;}
+.ide-tab-close{
+  width:14px;height:14px;border-radius:3px;
+  border:none;background:transparent;
+  color:var(--text3);cursor:pointer;font-size:10px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .1s;margin-left:2px;
+}
+.ide-tab-close:hover{background:var(--bg4);color:var(--red);}
+.ide-tab-add{
+  padding:0 10px;color:var(--text3);
+  cursor:pointer;font-size:16px;height:30px;
+  display:flex;align-items:center;
+  transition:color .1s;
+}
+.ide-tab-add:hover{color:var(--text);}
+
+/* IDE Workspace */
+.ide-workspace{flex:1;display:flex;overflow:hidden;}
+
+/* Sidebar */
+.ide-sidebar{
+  width:42px;flex-shrink:0;
+  background:var(--bg1);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;
+  padding:8px 0;gap:4px;
+}
+.act-btn{
+  width:32px;height:32px;border-radius:7px;
+  background:transparent;border:none;
+  color:var(--text3);cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;position:relative;
+}
+.act-btn:hover{color:var(--text);background:var(--bg3);}
+.act-btn.active{color:var(--cyan);background:rgba(56,189,248,0.1);}
+.act-btn::after{
+  content:attr(data-tip);position:absolute;left:calc(100%+8px);
+  background:var(--bg3);border:1px solid var(--brite);
+  color:var(--text);font-size:10.5px;font-family:'Syne',sans-serif;
+  font-weight:700;white-space:nowrap;padding:4px 8px;
+  border-radius:5px;pointer-events:none;opacity:0;
+  transition:opacity .15s;z-index:99;
+}
+.act-btn:hover::after{opacity:1;}
+
+/* File Panel */
+.ide-filepanel{
+  width:220px;flex-shrink:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .2s;
+}
+.ide-filepanel.collapsed{width:0;}
+.fp-header{
+  padding:8px 12px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.fp-title{font-size:9.5px;font-weight:700;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;}
+.fp-add{
+  width:18px;height:18px;border:none;background:transparent;
+  color:var(--cyan);cursor:pointer;font-size:16px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.fp-tree{flex:1;overflow-y:auto;padding:6px 0;}
+.fp-folder{
+  padding:4px 12px;font-size:11.5px;font-weight:700;
+  color:var(--text3);cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+  transition:background .1s;
+}
+.fp-folder:hover{background:var(--bg3);}
+.fp-file{
+  padding:4px 12px 4px 24px;font-size:12px;
+  font-family:'JetBrains Mono',monospace;
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+  transition:background .1s;
+}
+.fp-file:hover{background:var(--bg3);color:var(--text);}
+.fp-file.active{background:rgba(56,189,248,0.08);color:var(--cyan);}
+.fp-file-dot{width:6px;height:6px;border-radius:50%;background:var(--yellow);display:none;flex-shrink:0;}
+.fp-file.unsaved .fp-file-dot{display:block;}
+
+/* Editor area */
+.ide-editor-area{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+
+.editor-container{flex:1;display:flex;overflow:hidden;position:relative;}
+
+#line-numbers{
+  width:50px;flex-shrink:0;
+  background:var(--bg1);
+  border-right:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:21px;
+  color:var(--text3);padding:13px 8px 13px 0;
+  text-align:right;overflow:hidden;
+  user-select:none;
+}
+.ln-line{height:21px;}
+.ln-line.active{color:var(--text2);}
+
+#editor{
+  flex:1;
+  background:var(--bg0);color:var(--text);
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;line-height:21px;
+  padding:13px 16px;border:none;outline:none;
+  resize:none;tab-size:4;overflow:auto;
+  white-space:pre;caret-color:var(--cyan);
+  spellcheck:false;
+}
+#editor::-webkit-scrollbar{width:8px;height:8px;}
+#editor::-webkit-scrollbar-track{background:var(--bg1);}
+#editor::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* Autocomplete */
+#autocomplete{
+  position:fixed;
+  background:var(--bg3);border:1px solid var(--brite);
+  border-radius:8px;padding:4px;z-index:500;
+  min-width:220px;max-height:220px;overflow-y:auto;
+  box-shadow:0 12px 40px rgba(0,0,0,0.5);
+  display:none;
+  animation:dropIn .1s ease;
+}
+.ac-item{
+  padding:6px 10px;border-radius:5px;cursor:pointer;
+  display:flex;align-items:center;gap:8px;
+  transition:background .1s;
+}
+.ac-item:hover,.ac-item.selected{background:var(--bg4);}
+.ac-icon{
+  width:18px;height:18px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;flex-shrink:0;
+}
+.ac-label{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--text);flex:1;}
+.ac-type{font-size:10px;color:var(--text3);}
+.ac-desc{font-size:10.5px;color:var(--text3);margin-left:auto;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* Bottom Panel */
+.ide-bottom{
+  height:200px;flex-shrink:0;
+  background:var(--bg1);border-top:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transition:height .2s;
+}
+.ide-bottom.mini{height:28px;}
+.bp-tabs{
+  display:flex;height:28px;border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.bp-tab{
+  padding:0 14px;font-size:11px;font-weight:700;
+  color:var(--text3);cursor:pointer;height:100%;
+  display:flex;align-items:center;gap:5px;
+  border-bottom:2px solid transparent;transition:all .15s;
+}
+.bp-tab:hover{color:var(--text2);}
+.bp-tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.bp-badge{
+  background:var(--red);color:white;font-size:9px;
+  padding:1px 4px;border-radius:6px;font-weight:800;
+}
+.bp-badge.warn{background:var(--yellow);color:#000;}
+.bp-content{flex:1;overflow:hidden;position:relative;}
+.bp-pane{position:absolute;inset:0;overflow-y:auto;display:none;}
+.bp-pane.active{display:block;}
+.bp-pane::-webkit-scrollbar{width:6px;}
+.bp-pane::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+#terminal-out{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  line-height:19px;padding:10px 14px;color:var(--text);
+}
+.t-line{margin-bottom:1px;word-break:break-all;}
+.t-normal{color:var(--text);}
+.t-success{color:var(--green);}
+.t-error{color:var(--red);}
+.t-warning{color:var(--yellow);}
+.t-system{color:var(--text3);font-style:italic;}
+.t-prompt{color:var(--cyan);font-weight:700;}
+
+.term-input-row{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 14px;border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.term-label{color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;white-space:nowrap;}
+#term-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;
+  caret-color:var(--cyan);
+}
+
+/* Issue items */
+.issue-item{
+  padding:5px 14px;display:flex;align-items:flex-start;gap:8px;
+  font-size:12px;cursor:pointer;
+  border-left:2px solid transparent;transition:background .1s;
+  font-family:'JetBrains Mono',monospace;
+}
+.issue-item:hover{background:var(--bg2);}
+.issue-item.err{border-left-color:var(--red);}
+.issue-item.warn{border-left-color:var(--yellow);}
+.issue-msg{color:var(--text);flex:1;}
+.issue-loc{color:var(--text3);font-size:10.5px;white-space:nowrap;}
+
+/* AI Panel */
+.ide-ai{
+  width:280px;flex-shrink:0;
+  background:var(--bg2);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .2s;
+}
+.ide-ai.collapsed{width:0;}
+.ai-header{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;flex-shrink:0;
+}
+.ai-logo{
+  width:28px;height:28px;background:var(--grad);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.ai-title-main{font-size:13px;font-weight:800;}
+.ai-title-sub{font-size:10px;color:var(--text3);}
+.ai-status-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 6px var(--green);
+  margin-left:auto;animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+#ai-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;}
+#ai-messages::-webkit-scrollbar{width:4px;}
+#ai-messages::-webkit-scrollbar-thumb{background:var(--border);}
+
+.ai-msg{display:flex;gap:7px;animation:fadeUp .2s ease;}
+.ai-msg.user{flex-direction:row-reverse;}
+.ai-avatar{
+  width:24px;height:24px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+  flex-shrink:0;
+}
+.ai-msg.bot .ai-avatar{background:var(--grad);}
+.ai-msg.user .ai-avatar{background:var(--bg4);border:1px solid var(--brite);}
+.ai-bubble{
+  max-width:85%;padding:7px 10px;border-radius:9px;
+  font-size:12px;line-height:18px;
+}
+.ai-msg.bot .ai-bubble{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-top-left-radius:3px;}
+.ai-msg.user .ai-bubble{background:linear-gradient(135deg,rgba(14,165,233,.15),rgba(124,58,237,.15));border:1px solid var(--brite);color:var(--cyan);border-top-right-radius:3px;text-align:right;}
+.ai-bubble code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg2);padding:1px 4px;border-radius:3px;color:var(--cyan);}
+
+.ai-typing{display:flex;gap:4px;padding:3px 0;align-items:center;}
+.ai-typing span{width:5px;height:5px;border-radius:50%;background:var(--text3);animation:typing 1.2s infinite;}
+.ai-typing span:nth-child(2){animation-delay:.2s;}
+.ai-typing span:nth-child(3){animation-delay:.4s;}
+@keyframes typing{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-4px);opacity:1;}}
+
+.ai-input-area{padding:10px;border-top:1px solid var(--border);flex-shrink:0;}
+.ai-quick{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.ai-quick-btn{
+  font-size:10px;padding:3px 7px;border-radius:4px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text3);cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;
+  transition:all .15s;
+}
+.ai-quick-btn:hover{border-color:var(--cyan);color:var(--cyan);}
+.ai-input-row{display:flex;gap:6px;align-items:flex-end;}
+#ai-input{
+  flex:1;background:var(--bg3);border:1px solid var(--border);
+  border-radius:7px;color:var(--text);font-family:'Syne',sans-serif;
+  font-size:12px;padding:7px 10px;resize:none;outline:none;
+  min-height:32px;max-height:80px;overflow-y:auto;
+  transition:border-color .15s;
+}
+#ai-input:focus{border-color:var(--brite);}
+#ai-input::placeholder{color:var(--text3);}
+#ai-send{
+  width:32px;height:32px;border-radius:7px;
+  background:var(--grad2);border:none;color:white;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;transition:all .15s;
+}
+#ai-send:hover{transform:scale(1.06);box-shadow:0 2px 12px rgba(14,165,233,.4);}
+
+/* Status bar */
+.ide-status{
+  height:22px;flex-shrink:0;
+  background:#080d1a;border-top:1px solid var(--border);
+  display:flex;align-items:center;padding:0 8px;gap:0;
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--text3);
+}
+.sb-seg{
+  padding:0 8px;height:100%;display:flex;align-items:center;gap:4px;
+  cursor:default;transition:background .1s;border-right:1px solid var(--border);
+}
+.sb-seg:hover{background:var(--bg3);}
+.sb-seg.blue{color:var(--cyan);}
+.sb-seg.green{color:var(--green);}
+.sb-seg.yellow{color:var(--yellow);}
+.sb-seg.red{color:var(--red);}
+.sb-spacer{flex:1;}
+
+/* Search panel */
+.search-panel{
+  position:absolute;top:8px;right:16px;
+  background:var(--bg3);border:1px solid var(--brite);
+  border-radius:8px;padding:10px 12px;z-index:50;
+  display:none;box-shadow:0 8px 24px rgba(0,0,0,.4);
+  min-width:280px;animation:dropIn .15s ease;
+}
+.search-panel.show{display:block;}
+.search-row{display:flex;gap:6px;margin-bottom:6px;align-items:center;}
+.search-row:last-child{margin-bottom:0;}
+.search-inp{
+  flex:1;background:var(--bg2);border:1px solid var(--border);
+  border-radius:5px;color:var(--text);font-family:'JetBrains Mono',monospace;
+  font-size:12px;padding:5px 8px;outline:none;
+}
+.search-inp:focus{border-color:var(--cyan);}
+.s-btn{
+  padding:4px 8px;border-radius:4px;border:1px solid var(--border);
+  background:transparent;color:var(--text3);cursor:pointer;
+  font-size:11px;font-family:'Syne',sans-serif;font-weight:700;
+  transition:all .1s;white-space:nowrap;
+}
+.s-btn:hover{background:var(--bg4);color:var(--text);}
+.search-info{font-size:10.5px;color:var(--text3);font-family:'JetBrains Mono',monospace;}
+
+/* ═══════════════════════════════════════
+   ÖĞRETMEN PANELİ
+═══════════════════════════════════════ */
+#page-teacher{flex-direction:column;background:var(--bg0);}
+
+/* ═══════════════════════════════════════
+   NOTIFICATIONS & MODALS
+═══════════════════════════════════════ */
+#notifs{
+  position:fixed;bottom:28px;right:16px;
+  z-index:3000;display:flex;flex-direction:column;gap:6px;
+  pointer-events:none;
+}
+.notif{
+  background:var(--bg3);border:1px solid var(--brite);
+  border-radius:8px;padding:10px 14px;
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:600;min-width:200px;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+  pointer-events:auto;
+  animation:slideIn .2s ease;
+}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.notif.success{border-left:3px solid var(--green);}
+.notif.error{border-left:3px solid var(--red);}
+.notif.info{border-left:3px solid var(--cyan);}
+.notif.warning{border-left:3px solid var(--yellow);}
+
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);
+  backdrop-filter:blur(4px);z-index:1000;
+  display:none;align-items:center;justify-content:center;
+}
+.modal-bg.show{display:flex;}
+.modal{
+  background:var(--bg3);border:1px solid var(--brite);
+  border-radius:14px;padding:28px;min-width:320px;max-width:480px;width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,.6);animation:fadeUp .2s ease;
+}
+.modal-title{font-size:15px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.modal-input{
+  width:100%;background:var(--bg2);border:1px solid var(--border);
+  border-radius:7px;color:var(--text);font-family:'JetBrains Mono',monospace;
+  font-size:13px;padding:10px 12px;outline:none;margin-bottom:16px;
+  transition:border-color .15s;
+}
+.modal-input:focus{border-color:var(--cyan);}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+.modal-btn{
+  padding:8px 16px;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--text2);cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:12.5px;font-weight:700;
+  transition:all .15s;
+}
+.modal-btn:hover{background:var(--bg4);color:var(--text);}
+.modal-btn.primary{background:var(--grad2);color:white;border:none;}
+
+/* Öğretmen panel widget */
+.teacher-dash{flex:1;overflow:auto;padding:24px;}
+.t-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px;}
+.t-stat-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:16px;
+}
+.t-stat-val{font-size:28px;font-weight:800;margin-bottom:4px;}
+.t-stat-lbl{font-size:11px;color:var(--text3);}
+.t-stat-card.blue .t-stat-val{color:var(--cyan);}
+.t-stat-card.green .t-stat-val{color:var(--green);}
+.t-stat-card.yellow .t-stat-val{color:var(--yellow);}
+.t-stat-card.red .t-stat-val{color:var(--red);}
+.t-stat-card.purple .t-stat-val{color:var(--purple);}
+
+.student-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.student-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:14px;transition:all .2s;cursor:pointer;
+}
+.student-card:hover{border-color:var(--brite);}
+.student-card.online{border-left:3px solid var(--green);}
+.student-card.offline{border-left:3px solid var(--border);}
+.sc-name{font-size:13px;font-weight:700;margin-bottom:4px;}
+.sc-status{font-size:11px;color:var(--text3);margin-bottom:8px;display:flex;align-items:center;gap:4px;}
+.sc-online-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+.sc-progress{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.sc-progress-bar{height:100%;background:var(--grad);border-radius:2px;transition:width .5s;}
+
+/* Kod izleme */
+.code-monitor{
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;
+}
+.cm-header{
+  padding:10px 14px;background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.cm-preview{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  line-height:18px;color:var(--text2);padding:10px 14px;
+  max-height:120px;overflow:hidden;
+  background:var(--bg0);
+}
+
+/* Sınıf kodu */
+.class-code-box{
+  background:linear-gradient(135deg,rgba(56,189,248,.1),rgba(167,139,250,.1));
+  border:1px solid var(--brite);border-radius:10px;
+  padding:16px;text-align:center;margin-bottom:20px;
+}
+.class-code-label{font-size:11px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;}
+.class-code-val{
+  font-size:28px;font-weight:800;letter-spacing:6px;
+  font-family:'JetBrains Mono',monospace;color:var(--cyan);
+  text-shadow:0 0 20px rgba(56,189,248,.4);
+}
+
+/* ─── SYNTAX COLORS ─── */
+.syn-kw{color:#ff7eb6;font-weight:500;}
+.syn-str{color:#a5f3a5;}
+.syn-num{color:#ffd580;}
+.syn-cmt{color:#5c7a9e;font-style:italic;}
+.syn-fn{color:#82cfff;}
+.syn-bi{color:#ffab70;}
+.syn-op{color:#79c0ff;}
+
+/* Footer imza */
+.imza{
+  font-size:10px;color:var(--text3);
+  text-align:center;padding:8px 0 4px;
+  font-family:'JetBrains Mono',monospace;
+  flex-shrink:0;
+}
+.imza span{color:var(--cyan);}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     AUTH SAYFASI
+═══════════════════════════════════════ -->
+<div class="page active" id="page-auth">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-mark">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M4 8 L16 4 L28 8 L28 18 C28 24 22 28 16 30 C10 28 4 24 4 18 Z" fill="none" stroke="white" stroke-width="2"/>
+          <path d="M10 16 L14 20 L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="16" cy="16" r="3" fill="rgba(255,255,255,0.3)"/>
+        </svg>
+      </div>
+      <div class="auth-logo-name">GökKod</div>
+      <div class="auth-logo-ver">v1.1 — Kararlı Sürüm</div>
+      <div class="auth-logo-by">Engin Çimen tarafından geliştirilmiştir</div>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="authTab('giris')">Giriş Yap</button>
+      <button class="auth-tab" onclick="authTab('kayit')">Kayıt Ol</button>
+    </div>
+
+    <!-- GİRİŞ FORMU -->
+    <div id="form-giris">
+      <div class="form-group">
+        <label class="form-label">E-POSTA</label>
+        <input class="form-input" id="login-email" type="email" placeholder="ornek@email.com" autocomplete="email">
+        <div class="form-error" id="err-login-email">Geçerli bir e-posta girin</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ŞİFRE</label>
+        <input class="form-input" id="login-pass" type="password" placeholder="Şifreniz" onkeydown="if(event.key==='Enter')girisYap()">
+        <div class="form-error" id="err-login-pass">Şifre boş olamaz</div>
+      </div>
+      <div class="form-error" id="err-login-general" style="margin-bottom:12px;"></div>
+      <button class="btn-primary" onclick="girisYap()">🚀 Giriş Yap</button>
+      <div class="auth-divider">veya</div>
+      <button class="btn-google" onclick="googleGiris()">
+        <svg width="16" height="16" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 29.8 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3 12.9 3 4 11.9 4 23s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.5-3z"/></svg>
+        Google ile Giriş Yap
+      </button>
+      <div class="auth-footer">
+        <a href="#" style="color:var(--cyan);text-decoration:none;" onclick="sifremiUnuttum()">Şifremi Unuttum</a>
+      </div>
+    </div>
+
+    <!-- KAYIT FORMU -->
+    <div id="form-kayit" style="display:none">
+      <div class="form-group">
+        <label class="form-label">AD SOYAD</label>
+        <input class="form-input" id="reg-name" type="text" placeholder="Adınız Soyadınız">
+        <div class="form-error" id="err-reg-name">Ad soyad gerekli</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-POSTA</label>
+        <input class="form-input" id="reg-email" type="email" placeholder="ornek@email.com">
+        <div class="form-error" id="err-reg-email">Geçerli e-posta girin</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ŞİFRE</label>
+        <input class="form-input" id="reg-pass" type="password" placeholder="En az 8 karakter" oninput="sifreGuc(this.value)">
+        <div class="pass-strength"><div class="pass-strength-bar" id="pass-bar"></div></div>
+        <div id="pass-strength-text" style="font-size:10px;margin-top:3px;color:var(--text3)"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ROL SEÇ</label>
+        <div class="role-select">
+          <button class="role-btn active" id="rol-ogrenci" onclick="rolSec('ogrenci')">👨‍🎓 Öğrenci</button>
+          <button class="role-btn" id="rol-ogretmen" onclick="rolSec('ogretmen')">👨‍🏫 Öğretmen</button>
+        </div>
+      </div>
+      <div id="sinif-kodu-alani" style="display:none">
+        <div class="form-group">
+          <label class="form-label">SINIF KODU (Öğretmeninizden alın)</label>
+          <input class="form-input" id="reg-sinif-kodu" type="text" placeholder="ÖRN: GK-2024-ABC">
+        </div>
+      </div>
+      <div class="form-error" id="err-reg-general" style="margin-bottom:12px;"></div>
+      <button class="btn-primary" onclick="kayitOl()">✨ Hesap Oluştur</button>
+      <div class="auth-footer">Kayıt olarak <a href="#" style="color:var(--cyan);text-decoration:none;">Kullanım Şartlarını</a> kabul etmiş olursunuz.</div>
+    </div>
+  </div>
+  <div class="imza" style="position:absolute;bottom:12px;width:100%;"><span>GökKod v1.1</span> — Engin Çimen tarafından geliştirilmiştir · © 2025 GökBilişim</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     DASHBOARD SAYFASI
+═══════════════════════════════════════ -->
+<div class="page" id="page-dash">
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo" onclick="sayfaGit('dash')">
+      <div class="nav-logo-mark">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+          <path d="M4 8 L16 4 L28 8 L28 18 C28 24 22 28 16 30 C10 28 4 24 4 18 Z" fill="none" stroke="white" stroke-width="2.5"/>
+          <path d="M10 16 L14 20 L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">GökKod</span>
+      <span class="nav-logo-ver">v1.1</span>
+    </div>
+    <div class="nav-search">
+      <span style="color:var(--text3);font-size:13px;">🔍</span>
+      <input type="text" placeholder="Dosya, proje veya komut ara...">
+    </div>
+    <div class="nav-right">
+      <div class="nav-xp" id="nav-xp-bar">⚡ 0 XP</div>
+      <div class="nav-notif" onclick="bildirimleriGoster()">
+        🔔<div class="notif-badge" id="notif-badge" style="display:none"></div>
+      </div>
+      <div class="nav-avatar" id="nav-avatar" onclick="avatarMenu()">
+        <div class="nav-avatar-menu" id="avatar-menu">
+          <div class="nav-menu-item" onclick="sayfaGit('profil')">👤 Profilim</div>
+          <div class="nav-menu-item" onclick="sayfaGit('ayarlar')">⚙️ Ayarlar</div>
+          <div class="nav-menu-item" onclick="sayfaGit('teacher')" id="ogretmen-panel-link" style="display:none">📊 Öğretmen Paneli</div>
+          <div style="height:1px;background:var(--border);margin:4px 0"></div>
+          <div class="nav-menu-item danger" onclick="cikisYap()">🚪 Çıkış Yap</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="dash-body">
+    <!-- Sol sidebar -->
+    <div class="dash-sidebar">
+      <div class="dash-nav-group">
+        <div class="dash-nav-label">Ana Menü</div>
+        <div class="dash-nav-item active" onclick="dashSekme('ana')"><span class="icon">🏠</span>Ana Sayfa</div>
+        <div class="dash-nav-item" onclick="sayfaGit('ide')"><span class="icon">💻</span>IDE'yi Aç</div>
+        <div class="dash-nav-item" onclick="dashSekme('projeler')"><span class="icon">📁</span>Projelerim</div>
+        <div class="dash-nav-item" onclick="dashSekme('odevler')"><span class="icon">📋</span>Ödevler<span class="badge" id="odev-badge">0</span></div>
+      </div>
+      <div class="dash-nav-group">
+        <div class="dash-nav-label">GökKod</div>
+        <div class="dash-nav-item" onclick="dashSekme('dersler')"><span class="icon">📚</span>Dersler</div>
+        <div class="dash-nav-item" onclick="dashSekme('sablonlar')"><span class="icon">🧩</span>Şablonlar</div>
+        <div class="dash-nav-item" onclick="dashSekme('referans')"><span class="icon">📖</span>Referans</div>
+      </div>
+      <div class="dash-nav-group">
+        <div class="dash-nav-label">Topluluk</div>
+        <div class="dash-nav-item" onclick="dashSekme('topluluk')"><span class="icon">🌐</span>GökDepo</div>
+        <div class="dash-nav-item" onclick="dashSekme('siralama')"><span class="icon">🏆</span>Sıralama</div>
+      </div>
+      <div style="padding:8px 16px;margin-top:auto;">
+        <div style="font-size:9px;color:var(--text3);text-align:center;line-height:16px;">
+          GökKod v1.1<br>Engin Çimen<br>© 2025 GökBilişim
+        </div>
+      </div>
+    </div>
+
+    <!-- Ana içerik -->
+    <div class="dash-main" id="dash-main">
+      <!-- ANA SEKME -->
+      <div id="sekme-ana">
+        <div class="welcome-strip">
+          <div>
+            <div style="font-size:22px;margin-bottom:8px;">👋</div>
+            <div class="welcome-text">
+              <h2 id="welcome-name">Hoş geldin!</h2>
+              <p>GökKod IDE ile .cn dosyalarında kod yaz, öğren ve geliş.</p>
+            </div>
+          </div>
+          <div class="welcome-stats">
+            <div class="welcome-stat"><div class="val" id="stat-dosya">0</div><div class="lbl">Dosya</div></div>
+            <div class="welcome-stat"><div class="val" id="stat-xp">0</div><div class="lbl">XP</div></div>
+            <div class="welcome-stat"><div class="val" id="stat-streak">0</div><div class="lbl">🔥 Gün</div></div>
+          </div>
+        </div>
+
+        <div class="section-title">Hızlı Başlangıç</div>
+        <div class="cards-grid">
+          <div class="card" onclick="sayfaGit('ide')">
+            <div class="card-icon">💻</div>
+            <div class="card-title">IDE'yi Aç</div>
+            <div class="card-desc">GökKod editörüne geç ve .cn dosyalarını düzenle</div>
+            <div class="card-meta"><span>→ IDE</span><span class="card-tag tag-cn">.cn</span></div>
+          </div>
+          <div class="card" onclick="yeniDosyaOlustur()">
+            <div class="card-icon">📄</div>
+            <div class="card-title">Yeni .cn Dosyası</div>
+            <div class="card-desc">Sıfırdan yeni bir GökKod dosyası oluştur</div>
+            <div class="card-meta"><span class="card-tag tag-new">Yeni</span></div>
+          </div>
+          <div class="card" onclick="ornekAc()">
+            <div class="card-icon">💡</div>
+            <div class="card-title">Örnek Proje</div>
+            <div class="card-desc">GökKod sözdizimini gösteren hazır örneği aç</div>
+          </div>
+          <div class="card" onclick="dashSekme('referans')">
+            <div class="card-icon">📖</div>
+            <div class="card-title">Komut Referansı</div>
+            <div class="card-desc">Tüm GökKod komutlarını ve örneklerini incele</div>
+          </div>
+        </div>
+
+        <div class="section-title">Son Dosyalar</div>
+        <div class="file-explorer">
+          <div class="fe-header">
+            <span class="fe-title">📁 Proje Klasörü</span>
+            <div class="fe-actions">
+              <button class="fe-btn" onclick="dosyaSil()">🗑</button>
+              <button class="fe-btn primary" onclick="yeniDosyaOlustur()">+ Yeni .cn</button>
+            </div>
+          </div>
+          <div class="file-list" id="dosya-listesi">
+            <div style="padding:16px;font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;text-align:center;">
+              Henüz dosya yok. Yeni .cn dosyası oluşturun.
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Sınıf Bilgisi</div>
+        <div id="sinif-bilgi-alani" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px;">
+          <div style="font-size:12px;color:var(--text3);">Henüz bir sınıfa katılmadınız. Öğretmeninizden sınıf kodu alın.</div>
+        </div>
+      </div>
+
+      <!-- DİĞER SEKMELER -->
+      <div id="sekme-projeler" style="display:none">
+        <div class="section-title">Projelerim</div>
+        <div class="cards-grid" id="proje-grid"></div>
+      </div>
+      <div id="sekme-odevler" style="display:none">
+        <div class="section-title">Ödevler</div>
+        <div id="odev-listesi" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;"><div style="font-size:12px;color:var(--text3);">Henüz ödev yok.</div></div>
+      </div>
+      <div id="sekme-dersler" style="display:none">
+        <div class="section-title">GökKod Dersleri</div>
+        <div class="cards-grid" id="ders-grid"></div>
+      </div>
+      <div id="sekme-sablonlar" style="display:none">
+        <div class="section-title">Kod Şablonları</div>
+        <div class="cards-grid" id="sablon-grid"></div>
+      </div>
+      <div id="sekme-referans" style="display:none">
+        <div class="section-title">GökKod Komut Referansı v1.1</div>
+        <div id="referans-icerik" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:22px;color:var(--text2);overflow-x:auto;white-space:pre;"></div>
+      </div>
+      <div id="sekme-topluluk" style="display:none">
+        <div class="section-title">GökDepo — Topluluk Projeleri</div>
+        <div class="cards-grid" id="topluluk-grid"></div>
+      </div>
+      <div id="sekme-siralama" style="display:none">
+        <div class="section-title">Sıralama Tablosu</div>
+        <div id="siralama-listesi" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;"></div>
+      </div>
+    </div>
+  </div>
+  <div class="imza">GökKod <span>v1.1</span> — Engin Çimen tarafından geliştirilmiştir · © 2025 GökBilişim</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     IDE SAYFASI
+═══════════════════════════════════════ -->
+<div class="page" id="page-ide">
+  <!-- IDE Navbar -->
+  <div class="ide-nav">
+    <div class="ide-nav-logo" onclick="sayfaGit('dash')" title="Dashboard'a Dön">
+      <div class="ide-nav-logo-mark">
+        <svg width="16" height="16" viewBox="0 0 32 32" fill="none">
+          <path d="M4 8 L16 4 L28 8 L28 18 C28 24 22 28 16 30 C10 28 4 24 4 18 Z" fill="none" stroke="white" stroke-width="2.5"/>
+          <path d="M10 16 L14 20 L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="ide-menu">
+      <div class="ide-menu-item" onclick="menuAc(this,'m-dosya')">Dosya
+        <div class="ide-dropdown" id="m-dosya">
+          <div class="ide-dd-item" onclick="yeniDosyaModal()">📄 Yeni .cn Dosyası <span class="kbd">Ctrl+N</span></div>
+          <div class="ide-dd-item" onclick="dosyaAc()">📂 Dosya Aç <span class="kbd">Ctrl+O</span></div>
+          <div class="ide-dd-sep"></div>
+          <div class="ide-dd-item" onclick="dosyaKaydet()">💾 Kaydet <span class="kbd">Ctrl+S</span></div>
+          <div class="ide-dd-item" onclick="farkliKaydet()">💾 Farklı Kaydet <span class="kbd">Ctrl+Shift+S</span></div>
+          <div class="ide-dd-sep"></div>
+          <div class="ide-dd-item" onclick="projeIndirZip()">📦 .zip İndir</div>
+          <div class="ide-dd-sep"></div>
+          <div class="ide-dd-item" onclick="sayfaGit('dash')">🏠 Dashboard <span class="kbd">Ctrl+Shift+H</span></div>
+        </div>
+      </div>
+      <div class="ide-menu-item" onclick="menuAc(this,'m-duzenle')">Düzenle
+        <div class="ide-dropdown" id="m-duzenle">
+          <div class="ide-dd-item" onclick="edUndo()">↩ Geri Al <span class="kbd">Ctrl+Z</span></div>
+          <div class="ide-dd-item" onclick="edRedo()">↪ İleri Al <span class="kbd">Ctrl+Y</span></div>
+          <div class="ide-dd-sep"></div>
+          <div class="ide-dd-item" onclick="aramaGoster()">🔍 Bul <span class="kbd">Ctrl+F</span></div>
+          <div class="ide-dd-item" onclick="degistirGoster()">🔄 Bul & Değiştir <span class="kbd">Ctrl+H</span></div>
+          <div class="ide-dd-sep"></div>
+          <div class="ide-dd-item" onclick="yorumYap()">// Yorum Yap/Kaldır <span class="kbd">Ctrl+/</span></div>
+          <div class="ide-dd-item" onclick="girintiArtir()">→ Girinti Artır</div>
+          <div class="ide-dd-item" onclick="girintiAzalt()">← Girinti Azalt</div>
+          <div class="ide-dd-item" onclick="kodFormatlat()">✨ Kodu Formatla</div>
+        </div>
+      </div>
+      <div class="ide-menu-item" onclick="menuAc(this,'m-gorunum')">Görünüm
+        <div class="ide-dropdown" id="m-gorunum">
+          <div class="ide-dd-item" onclick="filepanelToggle()">📁 Dosya Paneli <span class="kbd">Ctrl+B</span></div>
+          <div class="ide-dd-item" onclick="aiPanelToggle()">🤖 AI Asistan <span class="kbd">Ctrl+Shift+A</span></div>
+          <div class="ide-dd-item" onclick="terminalToggle()">💻 Terminal <span class="kbd">Ctrl+`</span></div>
+          <div class="ide-dd-sep"></div>
+          <div class="ide-dd-item" onclick="fontBuyut()">A+ Font Büyüt <span class="kbd">Ctrl++</span></div>
+          <div class="ide-dd-item" onclick="fontKucult()">A- Font Küçült <span class="kbd">Ctrl+-</span></div>
+        </div>
+      </div>
+      <div class="ide-menu-item" onclick="menuAc(this,'m-calistir')">Çalıştır
+        <div class="ide-dropdown" id="m-calistir">
+          <div class="ide-dd-item" onclick="calistir()">▶ Çalıştır <span class="kbd">F5</span></div>
+          <div class="ide-dd-item" onclick="temizCalistir()">↺ Temiz Çalıştır <span class="kbd">Ctrl+F5</span></div>
+          <div class="ide-dd-sep"></div>
+          <div class="ide-dd-item" onclick="ciktiyiTemizle()">🗑 Çıktıyı Temizle</div>
+        </div>
+      </div>
+      <div class="ide-menu-item" onclick="menuAc(this,'m-yardim')">Yardım
+        <div class="ide-dropdown" id="m-yardim">
+          <div class="ide-dd-item" onclick="referansAc()">📖 GökKod Referansı</div>
+          <div class="ide-dd-item" onclick="kisayollarGoster()">⌨️ Kısayollar</div>
+          <div class="ide-dd-sep"></div>
+          <div class="ide-dd-item" onclick="hakkindaGoster()">ℹ️ GökKod v1.1 Hakkında</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ide-nav-center">
+      <button class="ide-run-btn" onclick="calistir()"><span>▶</span> Çalıştır</button>
+      <div class="ide-file-tag" id="aktif-dosya-tag">—</div>
+      <div class="ide-save-dot" id="save-dot" title="Kaydedilmemiş değişiklikler"></div>
+    </div>
+
+    <div class="ide-nav-right">
+      <button class="ide-icon-btn" onclick="aramaGoster()" title="Bul (Ctrl+F)">🔍</button>
+      <button class="ide-icon-btn" onclick="aiPanelToggle()" title="AI Asistan">🤖</button>
+      <button class="ide-icon-btn" onclick="kisayollarGoster()" title="Kısayollar">⌨️</button>
+      <button class="ide-icon-btn" onclick="sayfaGit('dash')" title="Dashboard">🏠</button>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="ide-toolbar">
+    <button class="tb-btn" onclick="calistir()">▶ Çalıştır</button>
+    <button class="tb-btn" onclick="temizCalistir()">↺</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="yeniDosyaModal()">📄 Yeni</button>
+    <button class="tb-btn" onclick="dosyaKaydet()">💾 Kaydet</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="aramaGoster()">🔍</button>
+    <button class="tb-btn" onclick="yorumYap()">// Yorum</button>
+    <button class="tb-btn" onclick="kodFormatlat()">✨ Formatla</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="fontBuyut()">A+</button>
+    <button class="tb-btn" onclick="fontKucult()">A-</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="filepanelToggle()">📁</button>
+    <button class="tb-btn" onclick="aiPanelToggle()">🤖</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="ide-tabs" id="ide-tabs">
+    <div class="ide-tab-add" onclick="yeniDosyaModal()" title="Yeni Dosya">+</div>
+  </div>
+
+  <!-- Workspace -->
+  <div style="flex:1;display:flex;overflow:hidden;flex-direction:column;">
+    <div class="ide-workspace" style="flex:1;overflow:hidden;">
+
+      <!-- Activity bar -->
+      <div class="ide-sidebar">
+        <button class="act-btn active" id="act-files" onclick="setActivity('files')" data-tip="Dosya Gezgini">📁</button>
+        <button class="act-btn" id="act-search" onclick="setActivity('search')" data-tip="Arama">🔍</button>
+        <button class="act-btn" id="act-issues" onclick="setActivity('issues')" data-tip="Sorunlar">⚠️</button>
+        <div style="flex:1"></div>
+        <button class="act-btn" onclick="hakkindaGoster()" data-tip="Hakkında">ℹ️</button>
+      </div>
+
+      <!-- File panel -->
+      <div class="ide-filepanel" id="ide-filepanel">
+        <div class="fp-header">
+          <span class="fp-title" id="fp-title">DOSYA GEZGİNİ</span>
+          <button class="fp-add" onclick="yeniDosyaModal()" title="Yeni Dosya">+</button>
+        </div>
+        <div class="fp-tree" id="fp-tree">
+          <div class="fp-folder">▾ 📁 Proje</div>
+        </div>
+      </div>
+
+      <!-- Editor area -->
+      <div class="ide-editor-area">
+        <!-- Search -->
+        <div class="search-panel" id="search-panel">
+          <div class="search-row">
+            <input class="search-inp" id="search-inp" placeholder="Bul..." oninput="aramaYap()">
+            <button class="s-btn" onclick="aramaOnceki()">↑</button>
+            <button class="s-btn" onclick="aramaSonraki()">↓</button>
+            <button class="s-btn" onclick="aramaKapat()">✕</button>
+          </div>
+          <div class="search-row" id="replace-row" style="display:none">
+            <input class="search-inp" id="replace-inp" placeholder="Değiştir...">
+            <button class="s-btn" onclick="birDegistir()">Değiştir</button>
+            <button class="s-btn" onclick="tumDegistir()">Tümünü</button>
+          </div>
+          <div class="search-row"><span class="search-info" id="search-info">Aramak için yazın</span></div>
+        </div>
+
+        <!-- Welcome screen -->
+        <div id="ide-welcome" style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;background:var(--bg0);">
+          <div style="width:64px;height:64px;background:var(--grad);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 0 32px rgba(56,189,248,0.25);">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <path d="M4 8 L16 4 L28 8 L28 18 C28 24 22 28 16 30 C10 28 4 24 4 18 Z" fill="none" stroke="white" stroke-width="2.5"/>
+              <path d="M10 16 L14 20 L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div style="font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">GökKod IDE v1.1</div>
+          <div style="font-size:13px;color:var(--text3);">.cn uzantılı dosyalarla çalışan özgün GökKod programlama ortamı</div>
+          <div style="display:flex;flex-direction:column;gap:8px;width:300px;margin-top:8px;">
+            <button onclick="yeniDosyaModal()" style="padding:10px;background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(167,139,250,.15));border:1px solid var(--brite);border-radius:8px;color:var(--cyan);font-weight:800;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;">📄 Yeni .cn Dosyası</button>
+            <button onclick="ornekAc()" style="padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;">💡 Örnek Projeyi Aç</button>
+            <button onclick="referansAc()" style="padding:10px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;">📖 GökKod Referansı</button>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:8px;">Engin Çimen tarafından geliştirilmiştir · GökBilişim</div>
+        </div>
+
+        <!-- Code container -->
+        <div class="editor-container" id="editor-container" style="display:none;">
+          <div id="line-numbers"></div>
+          <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
+            placeholder="-- GökKod dosyanızı buraya yazın..."></textarea>
+        </div>
+
+        <!-- Autocomplete -->
+        <div id="autocomplete"></div>
+      </div>
+
+      <!-- AI Panel -->
+      <div class="ide-ai" id="ide-ai">
+        <div class="ai-header">
+          <div class="ai-logo">🤖</div>
+          <div><div class="ai-title-main">GökAsistan</div><div class="ai-title-sub">GökKod AI · v1.1</div></div>
+          <div class="ai-status-dot"></div>
+        </div>
+        <div id="ai-messages">
+          <div class="ai-msg bot">
+            <div class="ai-avatar">🤖</div>
+            <div class="ai-bubble">Merhaba! Ben <strong>GökAsistan</strong> 🚀<br><br>GökKod v1.1'in yapay zeka yardımcısıyım. Kodunuzu analiz eder, hataları bulur ve GökKod sözdiziminde yardımcı olurum.<br><br>Ne yapmak istersiniz?</div>
+          </div>
+        </div>
+        <div class="ai-input-area">
+          <div class="ai-quick">
+            <button class="ai-quick-btn" onclick="aiHizli('Kodu açıkla')">Açıkla</button>
+            <button class="ai-quick-btn" onclick="aiHizli('Hatayı bul')">Hata Bul</button>
+            <button class="ai-quick-btn" onclick="aiHizli('Optimize et')">Optimize</button>
+            <button class="ai-quick-btn" onclick="aiHizli('Yorum ekle')">Yorum</button>
+          </div>
+          <div class="ai-input-row">
+            <textarea id="ai-input" placeholder="GökAsistan'a sor..." onkeydown="aiInputKontrol(event)" rows="1"></textarea>
+            <button id="ai-send" onclick="aiGonder()">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Panel -->
+    <div class="ide-bottom" id="ide-bottom">
+      <div class="bp-tabs">
+        <div class="bp-tab active" onclick="bpTab('terminal')" id="bptab-terminal">💻 ÇIKTI</div>
+        <div class="bp-tab" onclick="bpTab('sorunlar')" id="bptab-sorunlar">⚠️ SORUNLAR <span class="bp-badge" id="sorun-badge" style="display:none">0</span></div>
+        <div class="bp-tab" onclick="bpTab('gorevler')" id="bptab-gorevler">📋 GÖREVLER</div>
+        <div style="flex:1"></div>
+        <div class="bp-tab" onclick="terminalToggle()" style="padding:0 10px;">▼</div>
+      </div>
+      <div class="bp-content">
+        <div class="bp-pane active" id="pane-terminal">
+          <div id="terminal-out"></div>
+        </div>
+        <div class="bp-pane" id="pane-sorunlar"></div>
+        <div class="bp-pane" id="pane-gorevler" style="padding:10px 14px;">
+          <div style="font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;">Kodunuzda <code style="color:var(--cyan);">-- GÖREV:</code> yazarak görev oluşturun.</div>
+        </div>
+      </div>
+      <div class="term-input-row">
+        <span class="term-label">gök ›</span>
+        <input id="term-input" type="text" placeholder="GökKod terminali..." onkeydown="termKomut(event)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="ide-status">
+    <div class="sb-seg blue">🚀 GökKod v1.1</div>
+    <div class="sb-seg" id="sb-branch">⎇ ana</div>
+    <div class="sb-spacer"></div>
+    <div class="sb-seg" id="sb-sorun">✓ Sorun yok</div>
+    <div class="sb-seg" id="sb-imleç">Satır 1, Sütun 1</div>
+    <div class="sb-seg">GökKod (.cn)</div>
+    <div class="sb-seg">UTF-8</div>
+    <div class="sb-seg green" id="sb-kayit">● Kaydedildi</div>
+  </div>
+  <div class="imza">GökKod <span>v1.1</span> — Engin Çimen tarafından geliştirilmiştir · © 2025 GökBilişim</div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ÖĞRETMEN PANELİ
+═══════════════════════════════════════ -->
+<div class="page" id="page-teacher">
+  <nav class="navbar">
+    <div class="nav-logo" onclick="sayfaGit('dash')">
+      <div class="nav-logo-mark">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none">
+          <path d="M4 8 L16 4 L28 8 L28 18 C28 24 22 28 16 30 C10 28 4 24 4 18 Z" fill="none" stroke="white" stroke-width="2.5"/>
+          <path d="M10 16 L14 20 L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">GökKod</span>
+      <span class="nav-logo-ver">v1.1 — Öğretmen Paneli</span>
+    </div>
+    <div class="nav-right">
+      <button onclick="sayfaGit('ide')" style="padding:6px 14px;background:rgba(56,189,248,.1);border:1px solid var(--brite);border-radius:7px;color:var(--cyan);font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;">IDE'yi Aç</button>
+      <button onclick="sayfaGit('dash')" style="padding:6px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;color:var(--text2);font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;">Dashboard</button>
+    </div>
+  </nav>
+
+  <div style="flex:1;display:flex;overflow:hidden;">
+    <!-- Sol sidebar öğretmen -->
+    <div style="width:220px;background:var(--bg1);border-right:1px solid var(--border);padding:16px 0;overflow-y:auto;flex-shrink:0;">
+      <div class="dash-nav-group">
+        <div class="dash-nav-label">Öğretmen Menüsü</div>
+        <div class="dash-nav-item active" onclick="tSekme('genel')"><span class="icon">📊</span>Genel Bakış</div>
+        <div class="dash-nav-item" onclick="tSekme('sinif')"><span class="icon">👥</span>Sınıfım</div>
+        <div class="dash-nav-item" onclick="tSekme('odevler')"><span class="icon">📋</span>Ödevler</div>
+        <div class="dash-nav-item" onclick="tSekme('izleme')"><span class="icon">👁️</span>Canlı İzleme</div>
+        <div class="dash-nav-item" onclick="tSekme('sablonlar')"><span class="icon">🧩</span>Şablonlarım</div>
+        <div class="dash-nav-item" onclick="tSekme('istatistik')"><span class="icon">📈</span>İstatistikler</div>
+      </div>
+      <div style="padding:16px 12px;font-size:9px;color:var(--text3);text-align:center;line-height:16px;border-top:1px solid var(--border);margin-top:auto;">
+        GökKod v1.1<br>Engin Çimen<br>© 2025 GökBilişim
+      </div>
+    </div>
+
+    <!-- İçerik -->
+    <div class="teacher-dash" id="teacher-main">
+      <!-- GENEL BAKIŞ -->
+      <div id="t-sekme-genel">
+        <div class="class-code-box">
+          <div class="class-code-label">Sınıf Kodunuz</div>
+          <div class="class-code-val" id="sinif-kod-display">—</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:8px;">Öğrencileriniz bu kodla sınıfa katılabilir</div>
+          <button onclick="sinifKoduKopyala()" style="margin-top:8px;padding:5px 14px;background:rgba(56,189,248,.1);border:1px solid var(--brite);border-radius:6px;color:var(--cyan);font-size:11px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;">📋 Kodu Kopyala</button>
+        </div>
+
+        <div class="t-grid">
+          <div class="t-stat-card blue"><div class="t-stat-val" id="t-stat-ogrenci">0</div><div class="t-stat-lbl">👥 Toplam Öğrenci</div></div>
+          <div class="t-stat-card green"><div class="t-stat-val" id="t-stat-aktif">0</div><div class="t-stat-lbl">🟢 Şu An Aktif</div></div>
+          <div class="t-stat-card yellow"><div class="t-stat-val" id="t-stat-odev">0</div><div class="t-stat-lbl">📋 Bekleyen Ödev</div></div>
+          <div class="t-stat-card red"><div class="t-stat-val" id="t-stat-hata">0</div><div class="t-stat-lbl">⚠️ Toplam Hata</div></div>
+          <div class="t-stat-card purple"><div class="t-stat-val" id="t-stat-satir">0</div><div class="t-stat-lbl">📝 Yazılan Satır</div></div>
+        </div>
+
+        <div class="section-title">Öğrenci Durumu</div>
+        <div class="student-grid" id="t-student-grid">
+          <div style="font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;padding:16px;">Henüz sınıfa öğrenci katılmadı.</div>
+        </div>
+      </div>
+
+      <!-- SINIF -->
+      <div id="t-sekme-sinif" style="display:none">
+        <div class="section-title">Sınıf Yönetimi</div>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+          <button onclick="odevVer()" style="padding:8px 16px;background:rgba(56,189,248,.1);border:1px solid var(--brite);border-radius:7px;color:var(--cyan);font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;">📋 Ödev Ver</button>
+          <button onclick="sablonGonder()" style="padding:8px 16px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:7px;color:var(--green);font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;">📤 Şablon Gönder</button>
+          <button onclick="duyuruYap()" style="padding:8px 16px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:7px;color:var(--yellow);font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;">📢 Duyuru Yap</button>
+        </div>
+        <div class="student-grid" id="t-sinif-grid">
+          <div style="font-size:12px;color:var(--text3);">Öğrenci yok.</div>
+        </div>
+      </div>
+
+      <!-- ÖDEVLER -->
+      <div id="t-sekme-odevler" style="display:none">
+        <div class="section-title">Ödev Yönetimi</div>
+        <button onclick="yeniOdevModal()" style="padding:8px 16px;background:var(--grad2);border:none;border-radius:7px;color:white;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;margin-bottom:16px;">+ Yeni Ödev</button>
+        <div id="t-odev-listesi" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;"><div style="font-size:12px;color:var(--text3);">Henüz ödev yok.</div></div>
+      </div>
+
+      <!-- CANLI İZLEME -->
+      <div id="t-sekme-izleme" style="display:none">
+        <div class="section-title">Canlı Öğrenci İzleme</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;" id="t-izleme-grid">
+          <div style="font-size:12px;color:var(--text3);">Aktif öğrenci yok.</div>
+        </div>
+      </div>
+
+      <!-- ŞABLONLAR -->
+      <div id="t-sekme-sablonlar" style="display:none">
+        <div class="section-title">Şablonlarım</div>
+        <button onclick="yeniSablonModal()" style="padding:8px 16px;background:var(--grad2);border:none;border-radius:7px;color:white;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;font-size:12px;margin-bottom:16px;">+ Yeni Şablon</button>
+        <div class="cards-grid" id="t-sablon-grid"><div style="font-size:12px;color:var(--text3);">Henüz şablon yok.</div></div>
+      </div>
+
+      <!-- İSTATİSTİKLER -->
+      <div id="t-sekme-istatistik" style="display:none">
+        <div class="section-title">Sınıf İstatistikleri</div>
+        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px;">
+          <div style="font-size:12px;color:var(--text3);">İstatistikler veri biriktikçe burada görünecek.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="imza">GökKod <span>v1.1</span> — Engin Çimen tarafından geliştirilmiştir · © 2025 GökBilişim</div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="modal-yeni-dosya">
+  <div class="modal">
+    <div class="modal-title">📄 Yeni .cn Dosyası</div>
+    <input class="modal-input" id="yeni-dosya-adi" placeholder="dosya_adi" onkeydown="if(event.key==='Enter')yeniDosyaOnayla()">
+    <div style="font-size:11px;color:var(--text3);margin-top:-10px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;">.cn uzantısı otomatik eklenir</div>
+    <div class="modal-btns">
+      <button class="modal-btn" onclick="modalKapat('modal-yeni-dosya')">İptal</button>
+      <button class="modal-btn primary" onclick="yeniDosyaOnayla()">Oluştur</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-hakkinda">
+  <div class="modal" style="text-align:center;">
+    <div style="width:64px;height:64px;background:var(--grad);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 0 24px rgba(56,189,248,.3);">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M4 8 L16 4 L28 8 L28 18 C28 24 22 28 16 30 C10 28 4 24 4 18 Z" fill="none" stroke="white" stroke-width="2.5"/>
+        <path d="M10 16 L14 20 L22 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div style="font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;">GökKod IDE</div>
+    <div style="font-size:12px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:16px;">v1.1.0 — Kararlı Sürüm</div>
+    <div style="font-size:12.5px;color:var(--text2);line-height:22px;margin-bottom:16px;">.cn uzantılı dosyalarla çalışan, özgün sözdizimi<br>ve yerli AI desteğiyle güçlendirilmiş<br>GökKod programlama ortamı.</div>
+    <div style="font-size:12px;color:var(--cyan);font-weight:700;margin-bottom:4px;">Engin Çimen</div>
+    <div style="font-size:11px;color:var(--text3);margin-bottom:20px;">© 2025 GökBilişim — Tüm hakları saklıdır.</div>
+    <button class="modal-btn primary" onclick="modalKapat('modal-hakkinda')">Tamam</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-kisayollar">
+  <div class="modal" style="max-width:520px;width:100%;">
+    <div class="modal-title">⌨️ Klavye Kısayolları</div>
+    <div id="kisayol-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:3px;max-height:380px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:12px;"></div>
+    <div class="modal-btns" style="margin-top:16px;">
+      <button class="modal-btn primary" onclick="modalKapat('modal-kisayollar')">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications -->
+<div id="notifs"></div>
+
+<!-- Context Menu -->
+<div id="ctx-menu" style="position:fixed;background:var(--bg3);border:1px solid var(--brite);border-radius:8px;padding:4px;z-index:2000;min-width:160px;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;animation:dropIn .1s ease;">
+  <div class="ide-dd-item" onclick="edKes()">✂️ Kes</div>
+  <div class="ide-dd-item" onclick="edKopyala()">📋 Kopyala</div>
+  <div class="ide-dd-item" onclick="edYapistir()">📌 Yapıştır</div>
+  <div class="ide-dd-sep"></div>
+  <div class="ide-dd-item" onclick="aiSecimSor()">🤖 GökAsistan'a Sor</div>
+  <div class="ide-dd-sep"></div>
+  <div class="ide-dd-item" onclick="yorumYap()">// Yorum Yap</div>
+  <div class="ide-dd-item" onclick="calistir()">▶ Çalıştır</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  GökKod Platform v1.1 — Engin Çimen — GökBilişim
+// ═══════════════════════════════════════════════════════
+
+// ─── VERİTABANI (localStorage tabanlı, gerçek DB simülasyonu) ───
+const GokDB = {
+  // Kullanıcılar tablosu
+  kullanicilariAl() {
+    return JSON.parse(localStorage.getItem('gokdb_kullaniciler') || '[]');
+  },
+  kullaniciKaydet(k) {
+    const users = this.kullanicilariAl();
+    const existing = users.findIndex(u => u.email === k.email);
+    if (existing >= 0) users[existing] = { ...users[existing], ...k };
+    else users.push({ ...k, id: 'u_' + Date.now(), olusturma: new Date().toISOString(), xp: 0, streak: 0, dosya_sayisi: 0, login_girisi: 0 });
+    localStorage.setItem('gokdb_kullaniciler', JSON.stringify(users));
+    return users.find(u => u.email === k.email);
+  },
+  kullaniciBul(email) {
+    return this.kullanicilariAl().find(u => u.email === email);
+  },
+  kullaniciGuncelle(id, data) {
+    const users = this.kullanicilariAl();
+    const idx = users.findIndex(u => u.id === id);
+    if (idx >= 0) { users[idx] = { ...users[idx], ...data }; localStorage.setItem('gokdb_kullaniciler', JSON.stringify(users)); }
+  },
+
+  // Dosyalar tablosu
+  dosyalariAl(kullanici_id) {
+    const tum = JSON.parse(localStorage.getItem('gokdb_dosyalar') || '[]');
+    return tum.filter(d => d.kullanici_id === kullanici_id);
+  },
+  dosyaKaydet(dosya) {
+    const tum = JSON.parse(localStorage.getItem('gokdb_dosyalar') || '[]');
+    const idx = tum.findIndex(d => d.id === dosya.id);
+    if (idx >= 0) tum[idx] = { ...tum[idx], ...dosya, guncelleme: new Date().toISOString() };
+    else tum.push({ ...dosya, id: 'f_' + Date.now(), olusturma: new Date().toISOString(), guncelleme: new Date().toISOString() });
+    localStorage.setItem('gokdb_dosyalar', JSON.stringify(tum));
+    return tum.find(d => d.kullanici_id === dosya.kullanici_id && d.ad === dosya.ad);
+  },
+  dosyaSil(id) {
+    const tum = JSON.parse(localStorage.getItem('gokdb_dosyalar') || '[]');
+    localStorage.setItem('gokdb_dosyalar', JSON.stringify(tum.filter(d => d.id !== id)));
+  },
+
+  // Sınıflar tablosu
+  siniflariAl() { return JSON.parse(localStorage.getItem('gokdb_siniflar') || '[]'); },
+  sinifKaydet(s) {
+    const tum = this.siniflariAl();
+    tum.push({ ...s, id: 's_' + Date.now(), olusturma: new Date().toISOString(), ogrenciler: [] });
+    localStorage.setItem('gokdb_siniflar', JSON.stringify(tum));
+    return tum[tum.length - 1];
+  },
+  sinifBulKod(kod) { return this.siniflariAl().find(s => s.kod === kod); },
+  sinifBulOgretmen(ogretmen_id) { return this.siniflariAl().filter(s => s.ogretmen_id === ogretmen_id); },
+  sinifGuncelle(id, data) {
+    const tum = this.siniflariAl();
+    const idx = tum.findIndex(s => s.id === id);
+    if (idx >= 0) { tum[idx] = { ...tum[idx], ...data }; localStorage.setItem('gokdb_siniflar', JSON.stringify(tum)); }
+  },
+
+  // Oturumlar
+  oturumAl() { return JSON.parse(localStorage.getItem('gokdb_oturum') || 'null'); },
+  oturumKaydet(u) { localStorage.setItem('gokdb_oturum', JSON.stringify({ ...u, giris: new Date().toISOString(), token: 'gok_' + Math.random().toString(36).substr(2) })); },
+  oturumSil() { localStorage.removeItem('gokdb_oturum'); },
+
+  // Log kayıtları (güvenlik)
+  logEkle(tip, mesaj, kullanici_id = null) {
+    const logs = JSON.parse(localStorage.getItem('gokdb_logs') || '[]');
+    logs.push({ tip, mesaj, kullanici_id, zaman: new Date().toISOString(), ip: 'local' });
+    if (logs.length > 200) logs.shift();
+    localStorage.setItem('gokdb_logs', JSON.stringify(logs));
+  },
+
+  // Sınıf kodu üret
+  sinifKoduUret() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let kod = 'GK-';
+    for (let i = 0; i < 3; i++) kod += chars[Math.floor(Math.random() * chars.length)];
+    kod += '-';
+    for (let i = 0; i < 4; i++) kod += chars[Math.floor(Math.random() * chars.length)];
+    return kod;
+  }
+};
+
+// ─── UYGULAMA DURUMU ───
+const App = {
+  kullanici: null,
+  aktifDosya: null,
+  dosyalar: {},      // { id: { id, ad, icerik, kaydedildi } }
+  dosyaSirasi: [],   // açık dosya listesi
+  fontBoyutu: 13,
+  panelAcik: true,
+  filepanelAcik: true,
+  aiPanelAcik: true,
+  tamamlamaListesi: [],
+  tamamlamaSecili: 0,
+  aramaEslesmeler: [],
+  aramaIndex: -1,
+  termGecmis: [],
+  termGecmisIdx: -1,
+  renklendirid: null,
+};
+
+// ─── GökKod Motoru (CN → Python → Çalıştır) ───
+const GokMotor = {
+  kelimeler: {
+    'yaz':'print','yazar':'print','oku':'input','eğer':'if','eger':'if',
+    'değilse':'else','degilse':'else','yoksa':'elif','döngü':'for','dongu':'for',
+    'için':'in','icin':'in','iken':'while','fonksiyon':'def','döndür':'return',
+    'dondur':'return','içe_aktar':'import','ice_aktar':'import','dışa_aktar':'from',
+    'disa_aktar':'from','sınıf':'class','sinif':'class','sil':'del','ve':'and',
+    'veya':'or','değil':'not','degil':'not','doğru':'True','dogru':'True',
+    'yanlış':'False','yanlis':'False','boş':'None','bos':'None','kır':'break',
+    'kir':'break','devam':'continue','dene':'try','yakala':'except','fırlat':'raise',
+    'firlat':'raise','sonunda':'finally','ile':'with','olarak':'as','geçir':'pass',
+    'gecir':'pass','uzunluk':'len','aralık':'range','aralik':'range','topla':'sum',
+    'sırala':'sorted','sirala':'sorted','maks':'max','min':'min','yuvarlak':'round',
+    'mutlak':'abs','tür':'type','tur':'type','sayı':'int','sayi':'int',
+    'metin':'str','liste':'list','sözlük':'dict','sozluk':'dict','küme':'set',
+    'kume':'set','demet':'tuple','say':'enumerate','harita':'map','filtre':'filter',
+  },
+  hataCeviri: {
+    'SyntaxError':'Sözdizimi Hatası','NameError':'Tanımsız İsim Hatası',
+    'TypeError':'Tür Uyumsuzluğu','ValueError':'Geçersiz Değer',
+    'IndexError':'Dizin Sınır Dışı','KeyError':'Anahtar Bulunamadı',
+    'AttributeError':'Özellik Erişim Hatası','ZeroDivisionError':'Sıfıra Bölme',
+    'IndentationError':'Girinti Hatası','RuntimeError':'Çalışma Zamanı Hatası',
+    'RecursionError':'Sonsuz Döngü Hatası',
+  },
+  cndenPythona(cn) {
+    let py = cn.replace(/--([^\n]*)/g, '#$1');
+    const strings = [];
+    py = py.replace(/("""[\s\S]*?"""|'[^']*'|"[^"]*")/g, (m) => {
+      strings.push(m); return `__STR${strings.length-1}__`;
+    });
+    for (const [k,v] of Object.entries(this.kelimeler)) {
+      py = py.replace(new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + '\\b','g'), v);
+    }
+    strings.forEach((s,i) => { py = py.replace(`__STR${i}__`, s); });
+    return py;
+  },
+  calistir(cnKodu) {
+    const rapor = { cikti:[], hatalar:[], uyarilar:[], sure:0, basari:false };
+    const t0 = performance.now();
+    try {
+      const satirlar = cnKodu.split('\n');
+      for (let i = 0; i < satirlar.length; i++) {
+        const s = satirlar[i].trim();
+        if (!s || s.startsWith('--')) continue;
+        const yazM = s.match(/^(?:yaz|yazar)\s*\((.+)\)\s*$/);
+        if (yazM) {
+          let v = yazM[1].trim();
+          if ((v.startsWith('"')&&v.endsWith('"'))||(v.startsWith("'")&&v.endsWith("'"))) v = v.slice(1,-1);
+          else if (!isNaN(v)) v = v;
+          else v = `[${v}]`;
+          rapor.cikti.push({ metin: v, tip: 'normal' });
+        }
+        const python_kelimeler = ['print','input','import ','def ','class ','return '];
+        for (const pk of python_kelimeler) {
+          if (s.includes(pk) && !s.startsWith('--')) {
+            const cnK = Object.entries(this.kelimeler).find(([,v2]) => v2 === pk.trim())?.[0];
+            rapor.uyarilar.push({ mesaj: `'${pk.trim()}' Python komutu. GökKod: '${cnK||'?'}'`, satir: i+1 });
+            break;
+          }
+        }
+      }
+      rapor.basari = rapor.hatalar.length === 0;
+    } catch(e) {
+      rapor.hatalar.push({ mesaj: 'Çalışma Zamanı Hatası: ' + e.message, satir: 0 });
+    }
+    rapor.sure = Math.round(performance.now() - t0);
+    return rapor;
+  },
+  sorunAnaliz(cnKodu) {
+    const sorunlar = [];
+    cnKodu.split('\n').forEach((s, i) => {
+      const t = s.trim();
+      if (!t || t.startsWith('--')) return;
+      const pyK = { 'print':'yaz','input':'oku','def ':'fonksiyon','class ':'sınıf','return ':'döndür','import ':'içe_aktar','True':'doğru','False':'yanlış','None':'boş' };
+      for (const [pk,cnk] of Object.entries(pyK)) {
+        if (t.includes(pk)) { sorunlar.push({ tip:'uyari', mesaj:`'${pk.trim()}' yerine '${cnk}' kullanın`, satir:i+1 }); break; }
+      }
+    });
+    return sorunlar;
+  }
+};
+
+// ─── GOKKOD TAMAMLAMA VERİTABANI ───
+const TAMAMLAMALAR = [
+  { t:'yaz',    s:'yaz(${val})',        l:'yaz(değer)',          a:'Ekrana yazar',    k:'ƒ','c':'#82cfff' },
+  { t:'oku',    s:'oku("${msg}")',       l:'oku("mesaj")',        a:'Kullanıcıdan al', k:'ƒ','c':'#82cfff' },
+  { t:'eğer',   s:'eğer ${c}:\n    ',   l:'eğer koşul:',        a:'If bloğu',        k:'⌘','c':'#ff7eb6' },
+  { t:'eger',   s:'eğer ${c}:\n    ',   l:'eğer koşul:',        a:'If bloğu',        k:'⌘','c':'#ff7eb6' },
+  { t:'değilse',s:'değilse:\n    ',     l:'değilse:',           a:'Else bloğu',      k:'⌘','c':'#ff7eb6' },
+  { t:'yoksa',  s:'yoksa ${c}:\n    ',  l:'yoksa koşul:',       a:'Elif bloğu',      k:'⌘','c':'#ff7eb6' },
+  { t:'döngü',  s:'döngü ${i} için aralık(${n}):\n    ',l:'döngü i için aralık(n):', a:'For döngüsü',k:'⌘','c':'#ff7eb6' },
+  { t:'dongu',  s:'döngü ${i} için aralık(${n}):\n    ',l:'döngü i için aralık(n):', a:'For döngüsü',k:'⌘','c':'#ff7eb6' },
+  { t:'iken',   s:'iken ${c}:\n    ',   l:'iken koşul:',        a:'While döngüsü',   k:'⌘','c':'#ff7eb6' },
+  { t:'fonksiyon',s:'fonksiyon ${ad}(${p}):\n    ',l:'fonksiyon ad(params):', a:'Fonksiyon tanımla',k:'⌘','c':'#ff7eb6' },
+  { t:'döndür', s:'döndür ${val}',      l:'döndür değer',       a:'Değer döndür',    k:'⌘','c':'#ff7eb6' },
+  { t:'dondur', s:'döndür ${val}',      l:'döndür değer',       a:'Değer döndür',    k:'⌘','c':'#ff7eb6' },
+  { t:'sınıf',  s:'sınıf ${Ad}:\n    fonksiyon __init__(öz, ${p}):\n        ', l:'sınıf Ad:', a:'Sınıf tanımla',k:'⌘','c':'#ff7eb6' },
+  { t:'dene',   s:'dene:\n    ${body}\nyakala ${Hata} olarak ${e}:\n    yaz(${e})', l:'dene/yakala', a:'Hata yakalama',k:'⌘','c':'#ff7eb6' },
+  { t:'yakala', s:'yakala ${Hata} olarak ${e}:\n    ',l:'yakala Hata:', a:'Hata yakala',k:'⌘','c':'#ff7eb6' },
+  { t:'fırlat', s:'fırlat ${Hata}("${msg}")',l:'fırlat Hata()',  a:'Hata fırlat',    k:'⌘','c':'#ff7eb6' },
+  { t:'içe_aktar',s:'içe_aktar ${mod}',l:'içe_aktar modül',     a:'Modül içe aktar', k:'⌘','c':'#ff7eb6' },
+  { t:'uzunluk',s:'uzunluk(${obj})',   l:'uzunluk(nesne)',      a:'Uzunluk döner',   k:'◆','c':'#ffab70' },
+  { t:'aralık', s:'aralık(${bas}, ${bit}, ${adım})',l:'aralık(bas,bit,adım)', a:'Sayı aralığı',k:'◆','c':'#ffab70' },
+  { t:'aralik', s:'aralık(${n})',      l:'aralık(n)',           a:'Sayı aralığı',    k:'◆','c':'#ffab70' },
+  { t:'topla',  s:'topla(${liste})',   l:'topla(liste)',        a:'Listeyi topla',   k:'◆','c':'#ffab70' },
+  { t:'sırala', s:'sırala(${liste})',  l:'sırala(liste)',       a:'Listeyi sırala',  k:'◆','c':'#ffab70' },
+  { t:'maks',   s:'maks(${liste})',    l:'maks(liste)',         a:'En büyük',        k:'◆','c':'#ffab70' },
+  { t:'min',    s:'min(${liste})',     l:'min(liste)',          a:'En küçük',        k:'◆','c':'#ffab70' },
+  { t:'yuvarlak',s:'yuvarlak(${n}, ${b})',l:'yuvarlak(n,b)',   a:'Yuvarla',         k:'◆','c':'#ffab70' },
+  { t:'mutlak', s:'mutlak(${n})',      l:'mutlak(n)',           a:'Mutlak değer',    k:'◆','c':'#ffab70' },
+  { t:'tür',    s:'tür(${obj})',       l:'tür(nesne)',          a:'Türünü döner',    k:'◆','c':'#ffab70' },
+  { t:'doğru',  s:'doğru',            l:'doğru',               a:'Boolean True',    k:'○','c':'#ffd580' },
+  { t:'yanlış', s:'yanlış',           l:'yanlış',              a:'Boolean False',   k:'○','c':'#ffd580' },
+  { t:'boş',    s:'boş',              l:'boş',                 a:'None değeri',     k:'○','c':'#ffd580' },
+  { t:'kır',    s:'kır',              l:'kır',                 a:'Döngüden çık',    k:'⌘','c':'#ff7eb6' },
+  { t:'devam',  s:'devam',            l:'devam',               a:'Sonraki adım',    k:'⌘','c':'#ff7eb6' },
+  { t:'geçir',  s:'geçir',            l:'geçir',               a:'Boş blok',        k:'⌘','c':'#ff7eb6' },
+  { t:'ve',     s:'ve',               l:'ve',                  a:'Mantıksal AND',   k:'±','c':'#79c0ff' },
+  { t:'veya',   s:'veya',             l:'veya',                a:'Mantıksal OR',    k:'±','c':'#79c0ff' },
+  { t:'değil',  s:'değil ${c}',       l:'değil koşul',         a:'Mantıksal NOT',   k:'±','c':'#79c0ff' },
+];
+
+// ─── GÜVENLİK: Brute force koruması ───
+const Security = {
+  loginAttempts: {},
+  maxAttempts: 5,
+  lockDuration: 15 * 60 * 1000, // 15 dakika
+
+  loginDene(email) {
+    const now = Date.now();
+    if (!this.loginAttempts[email]) this.loginAttempts[email] = { count:0, lockUntil:0 };
+    const rec = this.loginAttempts[email];
+    if (rec.lockUntil > now) {
+      const kalan = Math.ceil((rec.lockUntil - now) / 60000);
+      return { izin: false, mesaj: `Çok fazla hatalı giriş. ${kalan} dakika bekleyin.` };
+    }
+    return { izin: true };
+  },
+  loginBasarisiz(email) {
+    if (!this.loginAttempts[email]) this.loginAttempts[email] = { count:0, lockUntil:0 };
+    this.loginAttempts[email].count++;
+    if (this.loginAttempts[email].count >= this.maxAttempts) {
+      this.loginAttempts[email].lockUntil = Date.now() + this.lockDuration;
+      GokDB.logEkle('guvenlik', `Brute force girişimi: ${email}`);
+    }
+  },
+  loginBasarili(email) {
+    delete this.loginAttempts[email];
+  },
+  emailDogrula(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  },
+  sifreDogrula(sifre) {
+    if (sifre.length < 8) return { gecerli:false, mesaj:'En az 8 karakter' };
+    if (!/[A-Z]/.test(sifre) && !/[0-9]/.test(sifre)) return { gecerli:false, mesaj:'Büyük harf veya rakam ekleyin' };
+    return { gecerli:true, mesaj:'' };
+  },
+  sifreHashle(sifre) {
+    // Gerçek uygulamada bcrypt kullanılır. Burada SHA-256 simülasyonu
+    let hash = 0;
+    for (let i = 0; i < sifre.length; i++) hash = ((hash << 5) - hash) + sifre.charCodeAt(i);
+    return 'gok_' + Math.abs(hash).toString(16) + '_' + sifre.length;
+  }
+};
+
+// ─── AUTH ───
+let aktifRol = 'ogrenci';
+
+function authTab(tip) {
+  document.getElementById('form-giris').style.display = tip === 'giris' ? 'block' : 'none';
+  document.getElementById('form-kayit').style.display = tip === 'kayit' ? 'block' : 'none';
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (i===0) === (tip==='giris')));
+}
+
+function rolSec(rol) {
+  aktifRol = rol;
+  document.getElementById('rol-ogrenci').classList.toggle('active', rol === 'ogrenci');
+  document.getElementById('rol-ogretmen').classList.toggle('active', rol === 'ogretmen');
+  document.getElementById('sinif-kodu-alani').style.display = rol === 'ogrenci' ? 'block' : 'none';
+}
+
+function sifreGuc(sifre) {
+  const bar = document.getElementById('pass-bar');
+  const txt = document.getElementById('pass-strength-text');
+  let puan = 0;
+  if (sifre.length >= 8) puan++;
+  if (sifre.length >= 12) puan++;
+  if (/[A-Z]/.test(sifre)) puan++;
+  if (/[0-9]/.test(sifre)) puan++;
+  if (/[^A-Za-z0-9]/.test(sifre)) puan++;
+  const renkler = ['#f87171','#fb923c','#fbbf24','#34d399','#22c55e'];
+  const etiketler = ['','Çok Zayıf','Zayıf','Orta','Güçlü','Çok Güçlü'];
+  bar.style.width = (puan * 20) + '%';
+  bar.style.background = renkler[Math.max(0,puan-1)] || '#f87171';
+  txt.textContent = etiketler[puan] || '';
+  txt.style.color = renkler[Math.max(0,puan-1)] || '#f87171';
+}
+
+function formHataGoster(id, goster) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('show', goster);
+}
+
+function girisYap() {
+  const email = document.getElementById('login-email').value.trim();
+  const sifre = document.getElementById('login-pass').value;
+  let hata = false;
+
+  // Güvenlik kontrol
+  const guvenlik = Security.loginDene(email);
+  if (!guvenlik.izin) { bildirim(guvenlik.mesaj, 'error'); return; }
+
+  if (!Security.emailDogrula(email)) { formHataGoster('err-login-email', true); hata = true; }
+  else formHataGoster('err-login-email', false);
+  if (!sifre) { formHataGoster('err-login-pass', true); hata = true; }
+  else formHataGoster('err-login-pass', false);
+  if (hata) return;
+
+  const kullanici = GokDB.kullaniciBul(email);
+  if (!kullanici || kullanici.sifre_hash !== Security.sifreHashle(sifre)) {
+    Security.loginBasarisiz(email);
+    document.getElementById('err-login-general').textContent = 'E-posta veya şifre hatalı.';
+    formHataGoster('err-login-general', true);
+    GokDB.logEkle('guvenlik', `Başarısız giriş: ${email}`);
+    return;
+  }
+
+  Security.loginBasarili(email);
+  GokDB.oturumKaydet(kullanici);
+  GokDB.logEkle('giris', `Giriş yapıldı: ${email}`, kullanici.id);
+  App.kullanici = kullanici;
+  dashbaslat();
+}
+
+function kayitOl() {
+  const ad = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const sifre = document.getElementById('reg-pass').value;
+  const sinifKodu = document.getElementById('reg-sinif-kodu').value.trim();
+  let hata = false;
+
+  if (!ad) { formHataGoster('err-reg-name', true); hata = true; } else formHataGoster('err-reg-name', false);
+  if (!Security.emailDogrula(email)) { formHataGoster('err-reg-email', true); hata = true; } else formHataGoster('err-reg-email', false);
+  const sifreSonuc = Security.sifreDogrula(sifre);
+  if (!sifreSonuc.gecerli) {
+    document.getElementById('err-reg-general').textContent = sifreSonuc.mesaj;
+    formHataGoster('err-reg-general', true); hata = true;
+  } else formHataGoster('err-reg-general', false);
+  if (hata) return;
+
+  // E-posta kontrolü
+  if (GokDB.kullaniciBul(email)) {
+    document.getElementById('err-reg-general').textContent = 'Bu e-posta zaten kayıtlı.';
+    formHataGoster('err-reg-general', true); return;
+  }
+
+  // Sınıf kodu kontrolü (öğrenci için)
+  let sinifId = null;
+  if (aktifRol === 'ogrenci' && sinifKodu) {
+    const sinif = GokDB.sinifBulKod(sinifKodu);
+    if (!sinif) {
+      document.getElementById('err-reg-general').textContent = 'Geçersiz sınıf kodu.';
+      formHataGoster('err-reg-general', true); return;
+    }
+    sinifId = sinif.id;
+  }
+
+  const yeniKullanici = {
+    ad, email, rol: aktifRol,
+    sifre_hash: Security.sifreHashle(sifre),
+    sinif_id: sinifId,
+    sinif_kodu: aktifRol === 'ogretmen' ? GokDB.sinifKoduUret() : null,
+  };
+
+  const kaydedilen = GokDB.kullaniciKaydet(yeniKullanici);
+
+  // Öğretmense sınıf oluştur
+  if (aktifRol === 'ogretmen') {
+    GokDB.sinifKaydet({ ogretmen_id: kaydedilen.id, ogretmen_adi: ad, kod: kaydedilen.sinif_kodu, ad: `${ad}'ın Sınıfı` });
+  }
+
+  // Öğrenciyse sınıfa ekle
+  if (aktifRol === 'ogrenci' && sinifId) {
+    const sinif = GokDB.sinifBulKod(sinifKodu);
+    if (sinif) {
+      const ogrenciler = sinif.ogrenciler || [];
+      ogrenciler.push({ id: kaydedilen.id, ad, email, giris: new Date().toISOString() });
+      GokDB.sinifGuncelle(sinif.id, { ogrenciler });
+    }
+  }
+
+  GokDB.logEkle('kayit', `Yeni kayıt: ${email} (${aktifRol})`, kaydedilen.id);
+  GokDB.oturumKaydet(kaydedilen);
+  App.kullanici = kaydedilen;
+  bildirim(`Hoş geldin, ${ad}! 🚀`, 'success');
+  dashbaslat();
+}
+
+function googleGiris() {
+  // Demo: Google girişi simülasyonu
+  bildirim('Google girişi yakında aktif olacak!', 'info');
+}
+
+function sifremiUnuttum() {
+  bildirim('Şifre sıfırlama e-postası gönderildi (demo)', 'info');
+}
+
+// ─── DASHBOARD ───
+function dashbaslat() {
+  const u = App.kullanici;
+  sayfaGit('dash');
+  document.getElementById('welcome-name').textContent = `Hoş geldin, ${u.ad}! 👋`;
+  document.getElementById('nav-avatar').innerHTML = (u.ad[0]||'?').toUpperCase() + '<div class="nav-avatar-menu" id="avatar-menu"><div class="nav-menu-item" onclick="avatarMenu()">👤 Profilim</div><div class="nav-menu-item" onclick="cikisYap()">🚪 Çıkış Yap</div>' + (u.rol==='ogretmen'?'<div class="nav-menu-item" onclick="sayfaGit(\'teacher\')">📊 Öğretmen Paneli</div>':'') + '</div>';
+
+  // XP
+  document.getElementById('nav-xp-bar').textContent = `⚡ ${u.xp||0} XP`;
+  document.getElementById('stat-xp').textContent = u.xp||0;
+  document.getElementById('stat-streak').textContent = u.streak||0;
+
+  // Öğretmen paneli linki
+  document.getElementById('ogretmen-panel-link').style.display = u.rol==='ogretmen' ? 'block' : 'none';
+
+  // Dosyaları yükle
+  dosyalariYukle();
+  derslerYukle();
+  sablonlariYukle();
+  referansYukle();
+  topluluguYukle();
+  siralamaYukle();
+
+  // Sınıf bilgisi
+  sinifBilgiGuncelle();
+
+  // Öğretmen sınıf kodu
+  if (u.rol === 'ogretmen') {
+    const siniflar = GokDB.sinifBulOgretmen(u.id);
+    if (siniflar.length > 0) {
+      document.getElementById('sinif-kod-display').textContent = siniflar[0].kod;
+      document.getElementById('t-stat-ogrenci').textContent = siniflar[0].ogrenciler?.length || 0;
+      ogretmenOgrenciGridiGuncelle(siniflar[0]);
+    }
+  }
+}
+
+function dosyalariYukle() {
+  if (!App.kullanici) return;
+  const dosyalar = GokDB.dosyalariAl(App.kullanici.id);
+  document.getElementById('stat-dosya').textContent = dosyalar.length;
+
+  const liste = document.getElementById('dosya-listesi');
+  if (dosyalar.length === 0) {
+    liste.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--text3);font-family:JetBrains Mono,monospace;text-align:center;">Henüz dosya yok. Yeni .cn dosyası oluşturun.</div>';
+    return;
+  }
+  liste.innerHTML = dosyalar.map(d => `
+    <div class="file-item${App.aktifDosya?.id===d.id?' active':''}" onclick="dashDosyaAc('${d.id}')">
+      <span class="file-item-icon">📄</span>
+      <span class="file-item-name">${d.ad}</span>
+      <span class="file-item-size">${Math.ceil((d.icerik||'').length/1024*10)/10}KB</span>
+    </div>
+  `).join('');
+}
+
+function dashDosyaAc(dosyaId) {
+  const tum = GokDB.dosyalariAl(App.kullanici.id);
+  const dosya = tum.find(d => d.id === dosyaId);
+  if (!dosya) return;
+  sayfaGit('ide');
+  sonraDosyaYukle(dosya);
+}
+
+function sonraDosyaYukle(dosya) {
+  setTimeout(() => {
+    if (!App.dosyalar[dosya.id]) {
+      App.dosyalar[dosya.id] = { ...dosya, kaydedildi: true };
+      App.dosyaSirasi.push(dosya.id);
+      sekmeEkle(dosya.id, dosya.ad);
+    }
+    dosyaAktifles(dosya.id);
+  }, 100);
+}
+
+function sinifBilgiGuncelle() {
+  const alan = document.getElementById('sinif-bilgi-alani');
+  if (!App.kullanici) return;
+  if (App.kullanici.sinif_id) {
+    const sinif = GokDB.siniflariAl().find(s => s.id === App.kullanici.sinif_id);
+    if (sinif) {
+      alan.innerHTML = `<div style="font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:4px;">📚 ${sinif.ad}</div><div style="font-size:11px;color:var(--text3);">Öğretmen: ${sinif.ogretmen_adi} · Sınıf Kodu: <code style="color:var(--cyan)">${sinif.kod}</code></div>`;
+    }
+  } else if (App.kullanici.rol === 'ogretmen') {
+    const siniflar = GokDB.sinifBulOgretmen(App.kullanici.id);
+    if (siniflar.length > 0) {
+      alan.innerHTML = `<div style="font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:4px;">📊 ${siniflar[0].ad}</div><div style="font-size:11px;color:var(--text3);">Sınıf Kodunuz: <code style="color:var(--cyan)">${siniflar[0].kod}</code> · ${siniflar[0].ogrenciler?.length||0} öğrenci</div>`;
+    }
+  }
+}
+
+function derslerYukle() {
+  const dersler = [
+    { ikon:'📝', ad:'Ders 1: Temel Komutlar', acik:'yaz, oku, değişkenler', seviye:'Başlangıç', xp:50 },
+    { ikon:'🔀', ad:'Ders 2: Koşullar', acik:'eğer, değilse, yoksa', seviye:'Başlangıç', xp:75 },
+    { ikon:'🔁', ad:'Ders 3: Döngüler', acik:'döngü, iken, kır, devam', seviye:'Orta', xp:100 },
+    { ikon:'⚙️', ad:'Ders 4: Fonksiyonlar', acik:'fonksiyon, döndür, parametreler', seviye:'Orta', xp:125 },
+    { ikon:'📦', ad:'Ders 5: Veri Yapıları', acik:'liste, sözlük, küme, demet', seviye:'Orta', xp:150 },
+    { ikon:'🛡️', ad:'Ders 6: Hata Yönetimi', acik:'dene, yakala, fırlat', seviye:'İleri', xp:175 },
+  ];
+  document.getElementById('ders-grid').innerHTML = dersler.map(d => `
+    <div class="card">
+      <div class="card-icon">${d.ikon}</div>
+      <div class="card-title">${d.ad}</div>
+      <div class="card-desc">${d.acik}</div>
+      <div class="card-meta"><span>${d.seviye}</span><span style="color:var(--yellow)">+${d.xp} XP</span></div>
+    </div>
+  `).join('');
+}
+
+function sablonlariYukle() {
+  const sablonlar = [
+    { ikon:'👋', ad:'Merhaba Dünya', acik:'İlk GökKod programı', icerik:'-- Merhaba Dünya\nyaz("Merhaba, Dünya!")\nyaz("GökKod IDE v1.1\'e hoş geldiniz!")' },
+    { ikon:'🧮', ad:'Hesap Makinesi', acik:'Temel aritmetik işlemler', icerik:'-- Hesap Makinesi\na = sayıya_çevir(oku("İlk sayı: "))\nb = sayıya_çevir(oku("İkinci sayı: "))\nyaz("Toplam:", a + b)\nyaz("Fark:", a - b)\nyaz("Çarpım:", a * b)' },
+    { ikon:'📊', ad:'Liste İşlemleri', acik:'Sıralama, filtreleme', icerik:'-- Liste Örneği\nnotlar = [85, 92, 78, 95, 88]\nyaz("Notlar:", notlar)\nyaz("En yüksek:", maks(notlar))\nyaz("Ortalama:", topla(notlar)/uzunluk(notlar))' },
+    { ikon:'🔢', ad:'Faktöriyel', acik:'Özyinelemeli fonksiyon', icerik:'-- Faktöriyel\nfonksiyon fakt(n):\n    eğer n <= 1:\n        döndür 1\n    değilse:\n        döndür n * fakt(n-1)\n\nyaz("5! =", fakt(5))' },
+    { ikon:'🎲', ad:'Döngü Örnekleri', acik:'for ve while kullanımı', icerik:'-- Döngüler\ndöngü i için aralık(1, 6):\n    yaz(i, "karesi:", i*i)\n\nyaz("---")\niken yanlış:\n    devam' },
+    { ikon:'📝', ad:'Sözlük Kullanımı', acik:'Anahtar-değer yapısı', icerik:'-- Sözlük\nkişi = {"ad": "Ahmet", "yaş": 20}\nyaz(kişi["ad"], "yaşında", kişi["yaş"])' },
+  ];
+  document.getElementById('sablon-grid').innerHTML = sablonlar.map(s => `
+    <div class="card" onclick="sablonAc('${encodeURIComponent(s.ad)}','${encodeURIComponent(s.icerik)}')">
+      <div class="card-icon">${s.ikon}</div>
+      <div class="card-title">${s.ad}</div>
+      <div class="card-desc">${s.acik}</div>
+      <div class="card-meta"><span class="card-tag tag-cn">.cn</span></div>
+    </div>
+  `).join('');
+}
+
+function sablonAc(ad, icerik) {
+  const dosyaAdi = decodeURIComponent(ad).toLowerCase().replace(/ /g,'_') + '.cn';
+  const dosyaIcerik = decodeURIComponent(icerik);
+  sayfaGit('ide');
+  setTimeout(() => {
+    ideDosyaOlustur(dosyaAdi, dosyaIcerik);
+  }, 150);
+}
+
+function referansYukle() {
+  document.getElementById('referans-icerik').textContent = `GökKod v1.1 — Komut Referansı
+Engin Çimen tarafından geliştirilmiştir · © 2025 GökBilişim
+
+── TEMEL KOMUTLAR ──────────────────────────────
+yaz("metin")              → Ekrana yazar
+yazar("metin", son=",")   → Sonlandırıcılı yazar
+oku("mesaj: ")            → Kullanıcıdan giriş alır
+
+── KOŞULLAR ────────────────────────────────────
+eğer koşul:
+    ...
+yoksa koşul2:
+    ...
+değilse:
+    ...
+
+── DÖNGÜLER ────────────────────────────────────
+döngü i için aralık(10):
+    yaz(i)
+
+döngü öge için liste:
+    yaz(öge)
+
+iken koşul:
+    ...
+    kır       → döngüden çık
+    devam     → sonraki adıma geç
+
+── FONKSİYONLAR ────────────────────────────────
+fonksiyon topla(a, b):
+    döndür a + b
+
+sonuç = topla(3, 5)
+
+── SINIFLAR ────────────────────────────────────
+sınıf Hayvan:
+    fonksiyon __init__(öz, ad):
+        öz.ad = ad
+    fonksiyon ses(öz):
+        yaz(öz.ad, "ses çıkardı!")
+
+kedi = Hayvan("Pamuk")
+kedi.ses()
+
+── HATA YÖNETİMİ ───────────────────────────────
+dene:
+    sonuç = 10 / 0
+yakala ZeroDivisionError olarak e:
+    yaz("Hata:", e)
+sonunda:
+    yaz("Tamamlandı")
+
+── VERİ YAPILARI ───────────────────────────────
+liste1   = [1, 2, 3, 4, 5]
+sozluk1  = {"ad": "Ali", "yaş": 25}
+kume1    = {1, 2, 3}
+demet1   = (1, 2, 3)
+
+── YERLEŞİK FONKSİYONLAR ──────────────────────
+uzunluk(nesne)          → eleman sayısı
+aralık(bas, bit, adım)  → sayı dizisi
+topla(liste)            → toplam
+maks(liste)             → en büyük
+min(liste)              → en küçük
+sırala(liste)           → sıralı liste
+yuvarlak(sayı, basamak) → yuvarlanmış sayı
+mutlak(sayı)            → mutlak değer
+tür(nesne)              → nesnenin türü
+say(liste)              → (indeks, değer) çiftleri
+harita(fonk, liste)     → fonksiyon uygulanmış liste
+filtre(fonk, liste)     → filtrelenmiş liste
+
+── MODÜLLER ────────────────────────────────────
+içe_aktar matematik
+yaz(matematik.pi)
+yaz(matematik.sqrt(16))
+
+── YORUM SATIRLARI ─────────────────────────────
+-- Bu bir yorum satırıdır
+
+── SABITLER ────────────────────────────────────
+doğru   → True
+yanlış  → False
+boş     → None`;
+}
+
+function topluluguYukle() {
+  const projeler = [
+    { ikon:'🎮', ad:'Mini Oyun', yazar:'Ali K.', yildiz:24, acik:'Konsol tabanlı sayı tahmin oyunu' },
+    { ikon:'🧮', ad:'Gelişmiş Hesap', yazar:'Ayşe M.', yildiz:18, acik:'Trigonometrik hesaplamalar' },
+    { ikon:'📊', ad:'Veri Analizi', yazar:'Mehmet T.', yildiz:31, acik:'Liste ve sözlük işlemleri' },
+  ];
+  document.getElementById('topluluk-grid').innerHTML = projeler.map(p => `
+    <div class="card">
+      <div class="card-icon">${p.ikon}</div>
+      <div class="card-title">${p.ad}</div>
+      <div class="card-desc">${p.acik}</div>
+      <div class="card-meta"><span>👤 ${p.yazar}</span><span>⭐ ${p.yildiz}</span></div>
+    </div>
+  `).join('');
+}
+
+function siralamaYukle() {
+  const kullaniciler = GokDB.kullanicilariAl().sort((a,b) => (b.xp||0)-(a.xp||0)).slice(0,10);
+  const liste = document.getElementById('siralama-listesi');
+  if (kullaniciler.length === 0) { liste.innerHTML = '<div style="padding:16px;font-size:12px;color:var(--text3);">Henüz sıralama yok.</div>'; return; }
+  liste.innerHTML = kullaniciler.map((u,i) => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);">
+      <span style="font-size:16px;width:24px;text-align:center;">${['🥇','🥈','🥉'][i]||'#'+(i+1)}</span>
+      <span style="flex:1;font-weight:700;">${u.ad}</span>
+      <span style="color:var(--yellow);font-family:'JetBrains Mono',monospace;">⚡ ${u.xp||0} XP</span>
+    </div>
+  `).join('');
+}
+
+function dashSekme(ad) {
+  document.querySelectorAll('[id^="sekme-"]').forEach(e => e.style.display='none');
+  document.getElementById('sekme-'+ad).style.display='block';
+  document.querySelectorAll('.dash-nav-item').forEach(e=>e.classList.remove('active'));
+  event?.target?.closest('.dash-nav-item')?.classList.add('active');
+}
+
+// ─── IDE ───
+function sekmeEkle(id, ad) {
+  const tabs = document.getElementById('ide-tabs');
+  const existing = document.querySelector(`.ide-tab[data-id="${id}"]`);
+  if (existing) return;
+  const tab = document.createElement('div');
+  tab.className = 'ide-tab';
+  tab.dataset.id = id;
+  tab.innerHTML = `<div class="ide-tab-dot"></div><span class="tab-name">${ad}</span><button class="ide-tab-close" onclick="sekmeKapat('${id}',event)">×</button>`;
+  tab.onclick = (e) => { if (!e.target.classList.contains('ide-tab-close')) dosyaAktifles(id); };
+  tabs.insertBefore(tab, tabs.querySelector('.ide-tab-add'));
+  fpAgacGuncelle();
+}
+
+function sekmeKapat(id, e) {
+  e?.stopPropagation();
+  if (App.dosyalar[id] && !App.dosyalar[id].kaydedildi) {
+    if (!confirm(`'${App.dosyalar[id].ad}' kaydedilmedi. Kapat?`)) return;
+  }
+  document.querySelector(`.ide-tab[data-id="${id}"]`)?.remove();
+  delete App.dosyalar[id];
+  App.dosyaSirasi = App.dosyaSirasi.filter(x => x !== id);
+  if (App.aktifDosya === id) {
+    const kalan = App.dosyaSirasi;
+    if (kalan.length > 0) dosyaAktifles(kalan[kalan.length-1]);
+    else { App.aktifDosya = null; ideWelcomeGoster(); }
+  }
+  fpAgacGuncelle();
+}
+
+function dosyaAktifles(id) {
+  App.aktifDosya = id;
+  const dosya = App.dosyalar[id];
+  if (!dosya) return;
+  document.getElementById('ide-welcome').style.display = 'none';
+  document.getElementById('editor-container').style.display = 'flex';
+  document.getElementById('editor').value = dosya.icerik || '';
+  document.getElementById('aktif-dosya-tag').textContent = dosya.ad;
+  document.querySelectorAll('.ide-tab').forEach(t => t.classList.toggle('active', t.dataset.id === id));
+  document.querySelectorAll('.fp-file').forEach(f => f.classList.toggle('active', f.dataset.id === id));
+  satirNoGuncelle();
+  renklendir();
+  sorunGuncelle();
+  document.getElementById('editor').focus();
+  document.title = `${dosya.ad} — GökKod IDE v1.1`;
+  GokDB.logEkle('dosya', `Dosya açıldı: ${dosya.ad}`, App.kullanici?.id);
+}
+
+function ideWelcomeGoster() {
+  document.getElementById('ide-welcome').style.display = 'flex';
+  document.getElementById('editor-container').style.display = 'none';
+  document.getElementById('aktif-dosya-tag').textContent = '—';
+  document.title = 'GökKod IDE v1.1';
+}
+
+function fpAgacGuncelle() {
+  const tree = document.getElementById('fp-tree');
+  const dosyalar = Object.values(App.dosyalar);
+  if (dosyalar.length === 0) { tree.innerHTML = '<div class="fp-folder">▾ 📁 Proje</div><div style="padding:8px 16px;font-size:11px;color:var(--text3);">Dosya yok</div>'; return; }
+  tree.innerHTML = '<div class="fp-folder">▾ 📁 Proje</div>' +
+    dosyalar.map(d => `<div class="fp-file${d.id===App.aktifDosya?' active':''}${!d.kaydedildi?' unsaved':''}" data-id="${d.id}" onclick="dosyaAktifles('${d.id}')"><div class="fp-file-dot"></div>📄 ${d.ad}</div>`).join('');
+}
+
+function ideDosyaOlustur(ad, icerik='') {
+  if (!App.kullanici) return;
+  const kaydedilen = GokDB.dosyaKaydet({ kullanici_id: App.kullanici.id, ad, icerik: icerik || `-- ${ad}\n-- GökKod v1.1\n-- Engin Çimen\n\n` });
+  App.dosyalar[kaydedilen.id] = { ...kaydedilen, kaydedildi: true };
+  App.dosyaSirasi.push(kaydedilen.id);
+  sekmeEkle(kaydedilen.id, ad);
+  dosyaAktifles(kaydedilen.id);
+  GokDB.kullaniciGuncelle(App.kullanici.id, { dosya_sayisi: (App.kullanici.dosya_sayisi||0)+1, xp: (App.kullanici.xp||0)+10 });
+  dosyalariYukle();
+  bildirim(`'${ad}' oluşturuldu!`, 'success');
+}
+
+function yeniDosyaModal() { modalAc('modal-yeni-dosya'); setTimeout(()=>{ const el=document.getElementById('yeni-dosya-adi'); el.value='yeni_dosya'; el.select(); el.focus(); },100); }
+
+function yeniDosyaOnayla() {
+  let ad = document.getElementById('yeni-dosya-adi').value.trim();
+  if (!ad) return;
+  if (!ad.endsWith('.cn')) ad += '.cn';
+  if (Object.values(App.dosyalar).some(d => d.ad === ad)) { bildirim('Bu isimde dosya zaten var!', 'warning'); return; }
+  modalKapat('modal-yeni-dosya');
+  ideDosyaOlustur(ad);
+}
+
+function yeniDosyaOlustur() { sayfaGit('ide'); setTimeout(yeniDosyaModal, 150); }
+
+function dosyaKaydet(ev) {
+  ev?.preventDefault();
+  if (!App.aktifDosya) { yeniDosyaModal(); return; }
+  const dosya = App.dosyalar[App.aktifDosya];
+  dosya.icerik = document.getElementById('editor').value;
+  dosya.kaydedildi = true;
+  GokDB.dosyaKaydet({ ...dosya, kullanici_id: App.kullanici?.id });
+  document.querySelector(`.ide-tab[data-id="${App.aktifDosya}"]`)?.classList.remove('unsaved');
+  document.querySelectorAll(`.fp-file[data-id="${App.aktifDosya}"]`).forEach(f=>f.classList.remove('unsaved'));
+  document.getElementById('save-dot').classList.remove('show');
+  document.getElementById('sb-kayit').textContent = '● Kaydedildi';
+  document.getElementById('sb-kayit').style.color = 'var(--green)';
+  bildirim(`'${dosya.ad}' kaydedildi`, 'success');
+  dosyalariYukle();
+  // XP
+  GokDB.kullaniciGuncelle(App.kullanici?.id, { xp: (App.kullanici?.xp||0)+5 });
+}
+
+function farkliKaydet() { dosyaKaydet(); }
+
+function ornekAc() {
+  sayfaGit('ide');
+  setTimeout(() => {
+    ideDosyaOlustur('ornek.cn', `-- GökKod Örnek Programı v1.1
+-- Engin Çimen tarafından geliştirilmiştir
+-- GökBilişim © 2025
+
+-- Değişkenler
+isim = "GökKod"
+versiyon = 1.1
+aktif = doğru
+
+-- Çıktı
+yaz("=== " + isim + " IDE ===")
+yaz("Versiyon:", versiyon)
+yaz("Aktif mi?", aktif)
+
+-- Döngü
+yaz("İlk 5 sayı:")
+döngü i için aralık(1, 6):
+    yaz("  →", i, "  (karesi:", i*i, ")")
+
+-- Fonksiyon
+fonksiyon faktöriyel(n):
+    eğer n <= 1:
+        döndür 1
+    değilse:
+        döndür n * faktöriyel(n - 1)
+
+yaz("5! =", faktöriyel(5))
+yaz("7! =", faktöriyel(7))
+
+-- Liste işlemleri
+notlar = [85, 92, 78, 95, 88, 72]
+yaz("Notlar:", notlar)
+yaz("En yüksek:", maks(notlar))
+yaz("En düşük:", min(notlar))
+yaz("Toplam:", topla(notlar))
+`);
+  }, 150);
+}
+
+function referansAc() {
+  sayfaGit('ide');
+  setTimeout(() => {
+    const ref = Object.values(App.dosyalar).find(d=>d.ad==='gokkod_referans.cn');
+    if (ref) { dosyaAktifles(ref.id); return; }
+    ideDosyaOlustur('gokkod_referans.cn', document.getElementById('referans-icerik')?.textContent || '-- GökKod Referansı\n');
+  }, 150);
+}
+
+function projeIndirZip() { bildirim('.zip indirme yakında eklenecek!', 'info'); }
+function dosyaAc() { bildirim('Dosya açma: .cn uzantılı dosyaları sürükleyip bırakabilirsiniz.', 'info'); }
+
+// ─── EDİTÖR ───
+const editor = document.getElementById('editor');
+const lineNums = document.getElementById('line-numbers');
+
+editor.addEventListener('input', () => {
+  if (!App.aktifDosya) return;
+  App.dosyalar[App.aktifDosya].icerik = editor.value;
+  App.dosyalar[App.aktifDosya].kaydedildi = false;
+  document.querySelector(`.ide-tab[data-id="${App.aktifDosya}"]`)?.classList.add('unsaved');
+  document.getElementById('save-dot').classList.add('show');
+  document.getElementById('sb-kayit').textContent = '○ Kaydedilmedi';
+  document.getElementById('sb-kayit').style.color = 'var(--yellow)';
+  satirNoGuncelle();
+  clearTimeout(App.renklendirid);
+  App.renklendirid = setTimeout(renklendir, 80);
+  clearTimeout(App._sorunId);
+  App._sorunId = setTimeout(sorunGuncelle, 600);
+  tamamlamaKontrol();
+});
+
+editor.addEventListener('keydown', (e) => {
+  if (App.tamamlamaListesi.length > 0) {
+    if (e.key==='ArrowDown') { e.preventDefault(); tamamlamaAsagi(); return; }
+    if (e.key==='ArrowUp') { e.preventDefault(); tamamlamaYukari(); return; }
+    if (e.key==='Tab'||e.key==='Enter') { e.preventDefault(); tamamlamaUygula(); return; }
+    if (e.key==='Escape') { tamamlamaKapat(); return; }
+  }
+  if (e.key==='Tab' && !e.shiftKey) {
+    e.preventDefault();
+    const pos = editor.selectionStart;
+    editor.value = editor.value.substring(0,pos) + '    ' + editor.value.substring(editor.selectionEnd);
+    editor.selectionStart = editor.selectionEnd = pos + 4;
+    satirNoGuncelle(); return;
+  }
+  if (e.key==='Enter') { e.preventDefault(); otomatikGirinti(); return; }
+  const esles = {'(':')','{':'}','[':']','"':'"',"'":"'"};
+  if (esles[e.key]) {
+    e.preventDefault();
+    const pos = editor.selectionStart;
+    const sel = editor.value.substring(pos, editor.selectionEnd);
+    if (sel) editor.value = editor.value.substring(0,pos)+e.key+sel+esles[e.key]+editor.value.substring(editor.selectionEnd);
+    else editor.value = editor.value.substring(0,pos)+e.key+esles[e.key]+editor.value.substring(pos);
+    editor.selectionStart = editor.selectionEnd = pos+1;
+    satirNoGuncelle(); return;
+  }
+  if (')]}\'\"'.includes(e.key)) {
+    const pos = editor.selectionStart;
+    if (editor.value[pos] === e.key) { e.preventDefault(); editor.selectionStart = editor.selectionEnd = pos+1; return; }
+  }
+  imleçGuncelle();
+});
+
+editor.addEventListener('keyup', imleçGuncelle);
+editor.addEventListener('click', () => { tamamlamaKapat(); imleçGuncelle(); });
+editor.addEventListener('scroll', () => { lineNums.scrollTop = editor.scrollTop; });
+editor.addEventListener('contextmenu', (e) => { e.preventDefault(); ctxMenuGoster(e); });
+
+function otomatikGirinti() {
+  const pos = editor.selectionStart;
+  const text = editor.value;
+  const satirBaslangic = text.lastIndexOf('\n', pos-1) + 1;
+  const satirMetni = text.substring(satirBaslangic, pos);
+  const girinti = satirMetni.match(/^(\s*)/)[1];
+  const ekGirinti = satirMetni.trimEnd().endsWith(':') ? '    ' : '';
+  editor.value = text.substring(0,pos) + '\n' + girinti + ekGirinti + text.substring(editor.selectionEnd);
+  editor.selectionStart = editor.selectionEnd = pos + 1 + girinti.length + ekGirinti.length;
+  satirNoGuncelle();
+}
+
+function satirNoGuncelle() {
+  const satirlar = editor.value.split('\n');
+  lineNums.innerHTML = satirlar.map((_,i) => `<div class="ln-line">${i+1}</div>`).join('');
+  lineNums.scrollTop = editor.scrollTop;
+}
+
+function imleçGuncelle() {
+  const t = editor.value.substring(0, editor.selectionStart);
+  const satirlar = t.split('\n');
+  document.getElementById('sb-imleç').textContent = `Satır ${satirlar.length}, Sütun ${satirlar[satirlar.length-1].length+1}`;
+}
+
+// ─── SYNTAX HIGHLIGHTING (basit, textarea üstü gizli div yerine statusbar rengi) ───
+function renklendir() {
+  // Satır numaralarını güncelle
+  satirNoGuncelle();
+}
+
+// ─── TAMAMLAMA ───
+function tamamlamaKontrol() {
+  const metin = editor.value.substring(0, editor.selectionStart);
+  const m = metin.match(/[\wğüşöçıİĞÜŞÖÇ_]+$/);
+  if (!m || m[0].length < 1) { tamamlamaKapat(); return; }
+  const kelime = m[0].toLowerCase();
+  const oneriler = TAMAMLAMALAR.filter(x => x.t.toLowerCase().startsWith(kelime) && x.t.toLowerCase() !== kelime).slice(0,10);
+  if (!oneriler.length) { tamamlamaKapat(); return; }
+  App.tamamlamaListesi = oneriler;
+  App.tamamlamaSecili = 0;
+  tamamlamaGoster(oneriler);
+}
+
+function tamamlamaGoster(oneriler) {
+  const popup = document.getElementById('autocomplete');
+  popup.innerHTML = oneriler.map((o,i) => `
+    <div class="ac-item${i===App.tamamlamaSecili?' selected':''}" onclick="tamamlamaUygula(${i})" onmouseover="App.tamamlamaSecili=${i};tamamlamaVurgula()">
+      <div class="ac-icon" style="background:${o.c}22;color:${o.c}">${o.k}</div>
+      <span class="ac-label">${o.l}</span>
+      <span class="ac-desc">${o.a}</span>
+    </div>
+  `).join('');
+  popup.style.display = 'block';
+  try {
+    const bbox = editor.getBoundingClientRect();
+    const t = editor.value.substring(0, editor.selectionStart);
+    const satirlar = t.split('\n');
+    const scrollTop = editor.scrollTop;
+    const satirNo = satirlar.length;
+    const lh = 21;
+    const top = bbox.top + satirNo * lh - scrollTop + 2;
+    const left = bbox.left + 56 + satirlar[satirlar.length-1].length * 7.5;
+    popup.style.top = Math.min(top, window.innerHeight - 220) + 'px';
+    popup.style.left = Math.min(left, window.innerWidth - 240) + 'px';
+  } catch(err) { popup.style.top='200px'; popup.style.left='200px'; }
+}
+
+function tamamlamaVurgula() {
+  document.querySelectorAll('.ac-item').forEach((el,i) => el.classList.toggle('selected', i===App.tamamlamaSecili));
+}
+function tamamlamaAsagi() { App.tamamlamaSecili = Math.min(App.tamamlamaSecili+1, App.tamamlamaListesi.length-1); tamamlamaVurgula(); }
+function tamamlamaYukari() { App.tamamlamaSecili = Math.max(App.tamamlamaSecili-1, 0); tamamlamaVurgula(); }
+
+function tamamlamaUygula(idx) {
+  if (idx !== undefined) App.tamamlamaSecili = idx;
+  const secilen = App.tamamlamaListesi[App.tamamlamaSecili];
+  if (!secilen) return;
+  const pos = editor.selectionStart;
+  const metin = editor.value;
+  const m = metin.substring(0,pos).match(/[\wğüşöçıİĞÜŞÖÇ_]+$/);
+  const baslangic = m ? pos - m[0].length : pos;
+  const snippet = secilen.s
+    .replace(/\$\{[^}]+\}/g, (p) => p.replace(/\$\{[^:}]+:?([^}]*)\}/,'$1'))
+    .replace(/\$\{[^}]+\}/, '');
+  editor.value = metin.substring(0,baslangic) + snippet + metin.substring(pos);
+  editor.selectionStart = editor.selectionEnd = baslangic + snippet.length;
+  if (App.aktifDosya) App.dosyalar[App.aktifDosya].icerik = editor.value;
+  tamamlamaKapat();
+  satirNoGuncelle();
+}
+
+function tamamlamaKapat() {
+  document.getElementById('autocomplete').style.display = 'none';
+  App.tamamlamaListesi = [];
+}
+
+// ─── ÇALIŞTIRMA ───
+function calistir() {
+  menuleriKapat();
+  if (!App.aktifDosya) { bildirim('Çalıştırılacak dosya yok!', 'warning'); return; }
+  const dosya = App.dosyalar[App.aktifDosya];
+  if (!dosya.kaydedildi) dosyaKaydet();
+  const kod = editor.value;
+  if (!kod.trim()) { bildirim('Dosya boş!', 'warning'); return; }
+  bpTab('terminal');
+  if (!App.panelAcik) terminalToggle();
+  termYaz(`▶ ${dosya.ad} çalıştırılıyor...`, 't-system');
+  termYaz('─'.repeat(45), 't-system');
+  const rapor = GokMotor.calistir(kod);
+  rapor.cikti.forEach(s => termYaz(s.metin, 't-normal'));
+  rapor.uyarilar.forEach(u => termYaz(`⚠ [Satır ${u.satir}] ${u.mesaj}`, 't-warning'));
+  termYaz('─'.repeat(45), 't-system');
+  if (rapor.basari) {
+    termYaz(`✓ Tamamlandı. (${rapor.sure}ms)`, 't-success');
+    bildirim('Program çalıştı!', 'success');
+    GokDB.kullaniciGuncelle(App.kullanici?.id, { xp: (App.kullanici?.xp||0)+15 });
+  } else {
+    rapor.hatalar.forEach(h => termYaz(`✗ ${h.mesaj}`, 't-error'));
+    termYaz(`✗ Hata ile sonlandı. (${rapor.sure}ms)`, 't-error');
+    bildirim('Çalıştırma hatası!', 'error');
+  }
+  sorunGuncelle();
+}
+
+function temizCalistir() { ciktiyiTemizle(); calistir(); }
+function ciktiyiTemizle() { document.getElementById('terminal-out').innerHTML = ''; }
+
+function termYaz(metin, cls='t-normal') {
+  const out = document.getElementById('terminal-out');
+  const div = document.createElement('div');
+  div.className = 't-line ' + cls;
+  div.textContent = metin;
+  out.appendChild(div);
+  out.parentElement.scrollTop = out.parentElement.scrollHeight;
+}
+
+// ─── SORUN PANEL ───
+function sorunGuncelle() {
+  const kod = editor.value;
+  const sorunlar = GokMotor.sorunAnaliz(kod);
+  const panel = document.getElementById('pane-sorunlar');
+  if (!sorunlar.length) {
+    panel.innerHTML = '<div class="issue-item" style="color:var(--green)">✓ Sorun bulunamadı</div>';
+    document.getElementById('sb-sorun').textContent = '✓ Sorun yok';
+    document.getElementById('sb-sorun').style.color = 'var(--green)';
+    document.getElementById('sorun-badge').style.display = 'none';
+  } else {
+    panel.innerHTML = sorunlar.map(s => `<div class="issue-item ${s.tip==='hata'?'err':'warn'}"><span>${s.tip==='hata'?'🔴':'🟡'}</span><span class="issue-msg">${s.mesaj}</span><span class="issue-loc">satır ${s.satir}</span></div>`).join('');
+    const sayac = sorunlar.length;
+    document.getElementById('sorun-badge').textContent = sayac;
+    document.getElementById('sorun-badge').style.display = '';
+    document.getElementById('sorun-badge').className = 'bp-badge' + (sorunlar.some(s=>s.tip==='hata')?' ':' warn');
+    document.getElementById('sb-sorun').textContent = `${sorunlar.some(s=>s.tip==='hata')?'✗':'⚠'} ${sayac} sorun`;
+    document.getElementById('sb-sorun').style.color = sorunlar.some(s=>s.tip==='hata')?'var(--red)':'var(--yellow)';
+  }
+}
+
+// ─── TERMINAL ───
+function termKomut(e) {
+  if (e.key !== 'Enter') {
+    if (e.key==='ArrowUp') { e.preventDefault(); const h=App.termGecmis; if(h.length>0){App.termGecmisIdx=Math.min(App.termGecmisIdx+1,h.length-1);e.target.value=h[App.termGecmisIdx];} }
+    if (e.key==='ArrowDown') { e.preventDefault(); if(App.termGecmisIdx>0){App.termGecmisIdx--;e.target.value=App.termGecmis[App.termGecmisIdx];}else{App.termGecmisIdx=-1;e.target.value='';} }
+    return;
+  }
+  const komut = e.target.value.trim();
+  if (!komut) return;
+  e.target.value = '';
+  App.termGecmis.unshift(komut);
+  App.termGecmisIdx = -1;
+  termYaz(`gök › ${komut}`, 't-prompt');
+  const k = komut.toLowerCase();
+  if (k==='temizle'||k==='cls') ciktiyiTemizle();
+  else if (k==='yardim') { ['Komutlar:','  temizle   — terminali temizle','  calistir  — aktif dosyayı çalıştır','  dosyalar  — açık dosyalar','  kaydet    — kaydet','  surum     — sürüm bilgisi','  gok <dosya.cn> — dosyayı çalıştır'].forEach(s=>termYaz(s,'t-system')); }
+  else if (k==='calistir') calistir();
+  else if (k==='kaydet') dosyaKaydet();
+  else if (k==='dosyalar') { Object.values(App.dosyalar).forEach(d=>termYaz(`  📄 ${d.ad}${!d.kaydedildi?' (kaydedilmedi)':''}`, 't-normal')); }
+  else if (k==='surum'||k==='sürüm') termYaz('GökKod IDE v1.1 — Engin Çimen — GökBilişim © 2025', 't-success');
+  else if (k.startsWith('gok ')) {
+    const dn = komut.slice(4).trim();
+    const d = Object.values(App.dosyalar).find(x=>x.ad===dn);
+    if (d) { dosyaAktifles(d.id); calistir(); }
+    else termYaz(`Dosya bulunamadı: ${dn}`, 't-error');
+  } else termYaz(`'${komut}' bilinmiyor. 'yardim' yazın.`, 't-error');
+}
+
+// ─── DÜZENLEME ARAÇLARI ───
+function yorumYap() {
+  const pos = editor.selectionStart, end = editor.selectionEnd;
+  const t = editor.value;
+  let bas = t.lastIndexOf('\n', pos-1)+1, son = t.indexOf('\n', end); if(son===-1) son=t.length;
+  const satirlar = t.substring(bas,son).split('\n');
+  const yeni = satirlar.map(s => s.lstrip?.().startsWith('--') ? s.replace(/^(\s*)-- ?/,'$1') : '-- '+s);
+  editor.value = t.substring(0,bas) + (yeni||satirlar.map(s=>s.trimStart().startsWith('--')?s.replace(/^(\s*)-- ?/,'$1'):'-- '+s)).join('\n') + t.substring(son);
+  if (App.aktifDosya) App.dosyalar[App.aktifDosya].icerik = editor.value;
+  satirNoGuncelle();
+}
+
+function girintiArtir() {
+  const pos = editor.selectionStart, t = editor.value;
+  editor.value = t.substring(0,pos)+'    '+t.substring(editor.selectionEnd);
+  editor.selectionStart = editor.selectionEnd = pos+4;
+  if (App.aktifDosya) App.dosyalar[App.aktifDosya].icerik = editor.value;
+  satirNoGuncelle();
+}
+
+function girintiAzalt() {
+  const pos = editor.selectionStart, t = editor.value;
+  if (t.substring(pos-4,pos)==='    ') { editor.value=t.substring(0,pos-4)+t.substring(pos); editor.selectionStart=editor.selectionEnd=pos-4; }
+  if (App.aktifDosya) App.dosyalar[App.aktifDosya].icerik = editor.value;
+  satirNoGuncelle();
+}
+
+function kodFormatlat() {
+  if (!App.aktifDosya) return;
+  const satirlar = editor.value.split('\n');
+  let girinti = 0;
+  const format = satirlar.map(s => {
+    const t = s.trim();
+    if (!t) return '';
+    const kapanislar = (t.match(/^(değilse|degilse|yoksa|yakala|sonunda)/)||[]).length > 0;
+    if (kapanislar && girinti > 0) girinti--;
+    const sonuc = '    '.repeat(girinti) + t;
+    if (t.endsWith(':')) girinti++;
+    return sonuc;
+  });
+  editor.value = format.join('\n');
+  if (App.aktifDosya) App.dosyalar[App.aktifDosya].icerik = editor.value;
+  satirNoGuncelle();
+  bildirim('Kod formatlandı!', 'success');
+}
+
+function edUndo() { editor.focus(); document.execCommand('undo'); }
+function edRedo() { editor.focus(); document.execCommand('redo'); }
+function edKes() { editor.focus(); document.execCommand('cut'); ctxMenuKapat(); }
+function edKopyala() { editor.focus(); document.execCommand('copy'); ctxMenuKapat(); }
+function edYapistir() { editor.focus(); document.execCommand('paste'); ctxMenuKapat(); }
+
+function fontBuyut() { App.fontBoyutu = Math.min(22, App.fontBoyutu+1); fontUygula(); }
+function fontKucult() { App.fontBoyutu = Math.max(9, App.fontBoyutu-1); fontUygula(); }
+function fontUygula() { editor.style.fontSize = App.fontBoyutu+'px'; editor.style.lineHeight = (App.fontBoyutu*1.65)+'px'; lineNums.style.fontSize = App.fontBoyutu+'px'; lineNums.style.lineHeight = (App.fontBoyutu*1.65)+'px'; satirNoGuncelle(); }
+
+// ─── ARAMA ───
+let aramaGosteriyor = false, degistirGosteriyor = false;
+function aramaGoster() { menuleriKapat(); document.getElementById('replace-row').style.display='none'; document.getElementById('search-panel').classList.add('show'); document.getElementById('search-inp').focus(); aramaGosteriyor=true; }
+function degistirGoster() { menuleriKapat(); document.getElementById('replace-row').style.display='flex'; document.getElementById('search-panel').classList.add('show'); document.getElementById('search-inp').focus(); }
+function aramaKapat() { document.getElementById('search-panel').classList.remove('show'); App.aramaEslesmeler=[]; App.aramaIndex=-1; aramaGosteriyor=false; }
+
+function aramaYap() {
+  const aranan = document.getElementById('search-inp').value;
+  const t = editor.value; App.aramaEslesmeler = [];
+  if (!aranan) { document.getElementById('search-info').textContent='Aramak için yazın'; return; }
+  let pos=0; while((pos=t.toLowerCase().indexOf(aranan.toLowerCase(),pos))!==-1) { App.aramaEslesmeler.push(pos); pos++; }
+  const info = document.getElementById('search-info');
+  if (App.aramaEslesmeler.length) { App.aramaIndex=0; info.textContent=`${App.aramaEslesmeler.length} sonuç`; info.style.color='var(--green)'; editor.setSelectionRange(App.aramaEslesmeler[0], App.aramaEslesmeler[0]+aranan.length); editor.focus(); }
+  else { info.textContent='Bulunamadı'; info.style.color='var(--red)'; }
+}
+function aramaSonraki() { if(!App.aramaEslesmeler.length) return; App.aramaIndex=(App.aramaIndex+1)%App.aramaEslesmeler.length; const a=document.getElementById('search-inp').value; editor.setSelectionRange(App.aramaEslesmeler[App.aramaIndex], App.aramaEslesmeler[App.aramaIndex]+a.length); editor.focus(); }
+function aramaOnceki() { if(!App.aramaEslesmeler.length) return; App.aramaIndex=(App.aramaIndex-1+App.aramaEslesmeler.length)%App.aramaEslesmeler.length; const a=document.getElementById('search-inp').value; editor.setSelectionRange(App.aramaEslesmeler[App.aramaIndex], App.aramaEslesmeler[App.aramaIndex]+a.length); editor.focus(); }
+function birDegistir() { const a=document.getElementById('search-inp').value, y=document.getElementById('replace-inp').value; if(!a) return; const pos=editor.value.toLowerCase().indexOf(a.toLowerCase(),editor.selectionStart); if(pos>=0){editor.value=editor.value.substring(0,pos)+y+editor.value.substring(pos+a.length); editor.selectionStart=editor.selectionEnd=pos+y.length;} aramaYap(); }
+function tumDegistir() { const a=document.getElementById('search-inp').value, y=document.getElementById('replace-inp').value; if(!a) return; const n=(editor.value.match(new RegExp(a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'))||[]).length; editor.value=editor.value.replace(new RegExp(a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),y); if(App.aktifDosya) App.dosyalar[App.aktifDosya].icerik=editor.value; aramaYap(); bildirim(`${n} yer değiştirildi`,'success'); }
+
+// ─── PANEL TOGGLE ───
+function filepanelToggle() { document.getElementById('ide-filepanel').classList.toggle('collapsed'); App.filepanelAcik=!App.filepanelAcik; }
+function aiPanelToggle() { document.getElementById('ide-ai').classList.toggle('collapsed'); App.aiPanelAcik=!App.aiPanelAcik; }
+function terminalToggle() { const b=document.getElementById('ide-bottom'); App.panelAcik=!App.panelAcik; b.classList.toggle('mini',!App.panelAcik); document.querySelector('#ide-bottom .bp-tab:last-child').textContent=App.panelAcik?'▼':'▲'; }
+
+function bpTab(ad) {
+  ['terminal','sorunlar','gorevler'].forEach(t=>{
+    document.getElementById('bptab-'+t)?.classList.toggle('active',t===ad);
+    document.getElementById('pane-'+t)?.classList.toggle('active',t===ad);
+  });
+  if (!App.panelAcik) terminalToggle();
+}
+
+function setActivity(tip) {
+  document.querySelectorAll('.act-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('act-'+tip)?.classList.add('active');
+  if (tip==='search') { aramaGoster(); return; }
+  if (tip==='issues') { bpTab('sorunlar'); return; }
+  document.getElementById('fp-title').textContent = tip==='files' ? 'DOSYA GEZGİNİ' : 'ARAMA';
+}
+
+// ─── AI PANELİ ───
+async function aiGonder() {
+  const mesaj = document.getElementById('ai-input').value.trim();
+  if (!mesaj) return;
+  document.getElementById('ai-input').value = '';
+  aiMesajEkle('user', mesaj);
+  const typingId = aiTypingGoster();
+  const kod = editor.value;
+  const sys = `Sen GökAsistan'sın, GökKod v1.1 programlama dilinin AI yardımcısısın. Engin Çimen tarafından geliştirilmiş GökBilişim ürünüsün. YALNIZCA GökKod sözdizimi hakkında Türkçe yardım et. Python'dan asla bahsetme. Kısa, net yanıtlar ver.`;
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:800, system:sys, messages:[{ role:'user', content: kod ? `Aktif kod:\n\`\`\`\n${kod.substring(0,400)}\n\`\`\`\n\nSoru: ${mesaj}` : mesaj }] })
+    });
+    aiTypingKaldir(typingId);
+    if (r.ok) { const d=await r.json(); aiMesajEkle('bot', d.content.map(c=>c.text||'').join('')); }
+    else throw new Error();
+  } catch { aiTypingKaldir(typingId); aiMesajEkle('bot', aiYerelYanit(mesaj)); }
+}
+
+function aiYerelYanit(soru) {
+  const s=soru.toLowerCase();
+  if(s.includes('açıkla')||s.includes('ne yapar')) return 'Kodu inceledim. <code>yaz()</code> ekrana çıktı verir. <code>eğer/değilse</code> koşulları, <code>döngü/iken</code> döngüleri kontrol eder. Daha spesifik sorabilirsiniz!';
+  if(s.includes('hata')) return 'Sorunlar paneline (⚠️) bakın. Sık görülen hatalar: girinti eksikliği, yanlış komut adı (Python değil GökKod kullanın), kapatılmamış parantez.';
+  if(s.includes('optimize')) return '1. Tekrar eden kodları fonksiyona alın\n2. İç içe döngüleri azaltın\n3. <code>aralık()</code> yerine liste kullanın';
+  if(s.includes('yaz')) return '<code>yaz("metin")</code> → ekrana yazar\n<code>yaz(değişken)</code> → değer yazar\n<code>yaz("a:", x, "b:", y)</code> → birden fazla değer';
+  return 'GökAsistan olarak yardımcı olmaya hazırım! GökKod v1.1 sözdizimi, komut kullanımı veya hata düzeltme hakkında soru sorabilirsiniz.';
+}
+
+function aiMesajEkle(tip, metin) {
+  const c = document.getElementById('ai-messages');
+  const d = document.createElement('div');
+  d.className = `ai-msg ${tip}`;
+  d.innerHTML = `<div class="ai-avatar">${tip==='bot'?'🤖':'👤'}</div><div class="ai-bubble">${metin.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>')}</div>`;
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+}
+function aiTypingGoster() { const id='typ'+Date.now(); const c=document.getElementById('ai-messages'); const d=document.createElement('div'); d.className='ai-msg bot'; d.id=id; d.innerHTML='<div class="ai-avatar">🤖</div><div class="ai-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>'; c.appendChild(d); c.scrollTop=c.scrollHeight; return id; }
+function aiTypingKaldir(id) { document.getElementById(id)?.remove(); }
+function aiHizli(q) { document.getElementById('ai-input').value=q; aiGonder(); }
+function aiInputKontrol(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();aiGonder();} }
+function aiSecimSor() { const sel=editor.value.substring(editor.selectionStart,editor.selectionEnd); if(sel){document.getElementById('ai-input').value='Bu kodu açıkla:\n'+sel; document.getElementById('ide-ai').classList.remove('collapsed'); aiGonder();} ctxMenuKapat(); }
+
+// ─── MODALS ───
+function modalAc(id) { document.getElementById(id).classList.add('show'); }
+function modalKapat(id) { document.getElementById(id).classList.remove('show'); }
+function hakkindaGoster() { menuleriKapat(); modalAc('modal-hakkinda'); }
+function kisayollarGoster() {
+  menuleriKapat();
+  const grid = document.getElementById('kisayol-grid');
+  const ks = [['Ctrl+S','Kaydet'],['Ctrl+N','Yeni Dosya'],['Ctrl+O','Dosya Aç'],['F5','Çalıştır'],['Ctrl+F5','Temiz Çalıştır'],['Ctrl+F','Bul'],['Ctrl+H','Değiştir'],['Ctrl+/','Yorum'],['Ctrl+B','Gezgini Gizle'],['Ctrl+`','Terminal'],['Ctrl+Shift+A','AI Panel'],['Ctrl++','Font Büyüt'],['Ctrl+-','Font Küçült'],['Tab','Tamamla/Girinti'],['Escape','Kapat']];
+  grid.innerHTML = ks.map(([k,a])=>`<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);"><span style="color:var(--text)">${a}</span><code style="color:var(--cyan);background:var(--bg2);padding:1px 5px;border-radius:3px;">${k}</code></div>`).join('');
+  modalAc('modal-kisayollar');
+}
+
+// ─── MENÜ ───
+function menuAc(el, menuId) {
+  const zatenAcik = el.classList.contains('open');
+  menuleriKapat();
+  if (!zatenAcik) { el.classList.add('open'); document.getElementById(menuId).classList.add('show'); }
+}
+function menuleriKapat() { document.querySelectorAll('.ide-menu-item').forEach(m=>m.classList.remove('open')); document.querySelectorAll('.ide-dropdown').forEach(d=>d.classList.remove('show')); }
+
+// ─── CTX MENU ───
+function ctxMenuGoster(e) { const m=document.getElementById('ctx-menu'); m.style.display='block'; let x=e.clientX,y=e.clientY; if(x+170>window.innerWidth)x=window.innerWidth-175; if(y+200>window.innerHeight)y=y-200; m.style.left=x+'px'; m.style.top=y+'px'; }
+function ctxMenuKapat() { document.getElementById('ctx-menu').style.display='none'; }
+
+// ─── BİLDİRİM ───
+function bildirim(mesaj, tip='info') {
+  const c = document.getElementById('notifs');
+  const n = document.createElement('div');
+  n.className = `notif ${tip}`;
+  const ikonlar = { success:'✓', error:'✗', warning:'⚠', info:'ℹ' };
+  n.innerHTML = `<span>${ikonlar[tip]||'ℹ'}</span><span>${mesaj}</span>`;
+  c.appendChild(n);
+  setTimeout(()=>{ n.style.transition='all .3s'; n.style.opacity='0'; n.style.transform='translateX(20px)'; setTimeout(()=>n.remove(),300); }, 2800);
+}
+
+// ─── SAYFA GEZİNME ───
+function sayfaGit(ad) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const sayfa = document.getElementById('page-'+ad);
+  if (sayfa) { sayfa.classList.add('active'); menuleriKapat(); ctxMenuKapat(); tamamlamaKapat(); }
+  if (ad==='ide') { setTimeout(()=>{ document.getElementById('editor').focus(); imleçGuncelle(); }, 100); }
+  if (ad==='dash') { dosyalariYukle(); }
+  if (ad==='teacher') { ogretmenPanelGuncelle(); }
+}
+
+// ─── ÖĞRETMEN PANELİ ───
+function tSekme(ad) {
+  ['genel','sinif','odevler','izleme','sablonlar','istatistik'].forEach(t=>{ document.getElementById('t-sekme-'+t).style.display=t===ad?'block':'none'; });
+  document.querySelectorAll('#page-teacher .dash-nav-item').forEach(i=>i.classList.toggle('active', i.textContent.trim()===({genel:'Genel Bakış',sinif:'Sınıfım',odevler:'Ödevler',izleme:'Canlı İzleme',sablonlar:'Şablonlarım',istatistik:'İstatistikler'}[ad]||'')));
+}
+
+function ogretmenPanelGuncelle() {
+  if (!App.kullanici) return;
+  const siniflar = GokDB.sinifBulOgretmen(App.kullanici.id);
+  if (!siniflar.length) return;
+  const sinif = siniflar[0];
+  document.getElementById('sinif-kod-display').textContent = sinif.kod;
+  document.getElementById('t-stat-ogrenci').textContent = sinif.ogrenciler?.length||0;
+  ogretmenOgrenciGridiGuncelle(sinif);
+}
+
+function ogretmenOgrenciGridiGuncelle(sinif) {
+  const grid = document.getElementById('t-student-grid');
+  const sinifGrid = document.getElementById('t-sinif-grid');
+  const izlemeGrid = document.getElementById('t-izleme-grid');
+  const ogrenciler = sinif.ogrenciler || [];
+  if (!ogrenciler.length) { [grid, sinifGrid, izlemeGrid].forEach(g=>g&&(g.innerHTML='<div style="font-size:12px;color:var(--text3);">Henüz öğrenci yok.</div>')); return; }
+  const kartlar = ogrenciler.map(o=>`
+    <div class="student-card online">
+      <div class="sc-name">${o.ad}</div>
+      <div class="sc-status"><div class="sc-online-dot"></div>Aktif · Son giriş: Az önce</div>
+      <div class="sc-progress"><div class="sc-progress-bar" style="width:${Math.random()*80+20}%"></div></div>
+    </div>
+  `).join('');
+  if(grid) grid.innerHTML=kartlar;
+  if(sinifGrid) sinifGrid.innerHTML=kartlar;
+  const izlemeKartlar = ogrenciler.map(o=>`
+    <div class="code-monitor">
+      <div class="cm-header"><span style="font-size:12px;font-weight:700;">👤 ${o.ad}</span><span style="font-size:10px;color:var(--green);">● Aktif</span></div>
+      <div class="cm-preview">-- ${o.ad} - kod yazıyor...\nyaz("Merhaba!")\n</div>
+    </div>
+  `).join('');
+  if(izlemeGrid) izlemeGrid.innerHTML=izlemeKartlar;
+}
+
+function sinifKoduKopyala() {
+  const kod = document.getElementById('sinif-kod-display').textContent;
+  if (navigator.clipboard) navigator.clipboard.writeText(kod);
+  bildirim('Sınıf kodu kopyalandı!', 'success');
+}
+
+function odevVer() { bildirim('Ödev verme özelliği yakında!', 'info'); }
+function sablonGonder() { bildirim('Şablon gönderme yakında!', 'info'); }
+function duyuruYap() { bildirim('Duyuru özelliği yakında!', 'info'); }
+function yeniOdevModal() { bildirim('Yeni ödev oluşturma yakında!', 'info'); }
+function yeniSablonModal() { bildirim('Yeni şablon oluşturma yakında!', 'info'); }
+
+// ─── ÇIKIŞ ───
+function cikisYap() { GokDB.oturumSil(); App.kullanici=null; App.dosyalar={}; App.dosyaSirasi=[]; App.aktifDosya=null; sayfaGit('auth'); bildirim('Çıkış yapıldı', 'info'); }
+function avatarMenu() { document.getElementById('avatar-menu')?.classList.toggle('show'); }
+function bildirimleriGoster() { bildirim('Yeni bildirim yok.', 'info'); }
+
+// ─── GLOBAL KLAVYE ───
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey) {
+    const cur = document.querySelector('.page.active')?.id;
+    if (cur==='page-ide') {
+      switch(e.key.toLowerCase()) {
+        case 's': e.preventDefault(); dosyaKaydet(); break;
+        case 'n': e.preventDefault(); yeniDosyaModal(); break;
+        case 'f': e.preventDefault(); aramaGoster(); break;
+        case 'h': e.preventDefault(); degistirGoster(); break;
+        case 'b': e.preventDefault(); filepanelToggle(); break;
+        case '/': e.preventDefault(); yorumYap(); break;
+        case '+': case '=': e.preventDefault(); fontBuyut(); break;
+        case '-': e.preventDefault(); fontKucult(); break;
+      }
+      if (e.key==='F5') { e.preventDefault(); temizCalistir(); }
+      if (e.shiftKey && e.key.toLowerCase()==='a') { e.preventDefault(); aiPanelToggle(); }
+      if (e.shiftKey && e.key.toLowerCase()==='h') { e.preventDefault(); sayfaGit('dash'); }
+    }
+  }
+  if (e.key==='F5' && document.querySelector('.page.active')?.id==='page-ide') { e.preventDefault(); calistir(); }
+  if (e.key==='Escape') { aramaKapat(); menuleriKapat(); ctxMenuKapat(); tamamlamaKapat(); document.querySelectorAll('.modal-bg').forEach(m=>m.classList.remove('show')); document.querySelectorAll('.nav-avatar-menu,.ide-dropdown').forEach(m=>m.classList.remove('show')); }
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.ide-menu-item')) menuleriKapat();
+  if (!e.target.closest('.nav-avatar')) document.querySelectorAll('.nav-avatar-menu').forEach(m=>m.classList.remove('show'));
+  if (!e.target.closest('#autocomplete') && !e.target.closest('#editor')) tamamlamaKapat();
+  if (!e.target.closest('#ctx-menu') && !e.target.closest('#editor')) ctxMenuKapat();
+});
+
+// ─── BAŞLANGIÇ ───
+(function() {
+  const oturum = GokDB.oturumAl();
+  if (oturum) {
+    const k = GokDB.kullaniciBul(oturum.email);
+    if (k) { App.kullanici = k; dashbaslat(); return; }
+  }
+  sayfaGit('auth');
+  document.getElementById('page-auth').classList.add('active');
+
+  // Terminal başlangıç mesajları (IDE'ye girildiğinde)
+  setTimeout(() => {
+    termYaz('GökKod IDE v1.1 hazır.', 't-success');
+    termYaz('Engin Çimen — GökBilişim © 2025', 't-system');
+    termYaz('"yardim" yazarak komutları görün.', 't-system');
+    termYaz('─'.repeat(45), 't-system');
+  }, 500);
+})();
+</script>
+</body>
+</html>
